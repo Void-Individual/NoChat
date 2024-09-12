@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/static/login-page.css">
+</head>
+<body>
+    <h1>Welcome to the NoChat App</h1>
+    <p>Create an account</p>
+    <form action="/create-account" method="POST">
+        <label for="name">Email:</label>
+        <input type="text" id="email" placeholder="Use a valid email" name="email" required>
+        <br><br>
+        <label for="username">Username:</label>
+        <textarea id="username" placeholder="Select a unique username" name="username" required></textarea>
+        <br><br>
+        <label for="password">Password:</label>
+        <textarea id="password" name="password" required></textarea>
+        <br><br>
+        <label for="phoneNumber">Phone Number:</label>
+        <textarea id="phoneNumber" placeholder="Optional" name="phoneNumber"></textarea>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

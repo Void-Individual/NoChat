@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/static/login-page.css">
+</head>
+<body>
+    <h1>Welcome to NoChat </h1>
+    <p>Log in to your account</p>
+    <form action="/login" method="POST">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
+        <br><br>
+        <label for="password">Password:</label>
+        <textarea id="password" placeholder="" name="password" required></textarea>
+        <br><br>
+        <div class="buttons">
+            <button type="submit">Submit</button>
+            <button type="button" id='create'>I dont have an account</button>
+        </div>
+    </form>
+</body>
+<script>
+    const create = document.querySelector('#create');
+    create.addEventListener('click', e => {
+        //e.stopPropagation();
+        window.location.href = '/create-account.html';
+    })
+    /* Note that the previously created form was used to collect data
+    * Then passed to this script to encode it into base64 before calling the route
+    * The route then generates an authorization token to be used for the duration of the login session
+    * which has currently been set to 24 hours
+    */
+    //document.getElementById('login').addEventListener('submit', async (event) => {
+    //    event.preventDefault();
+
+    //    const email = document.getElementById('email').value;
+    //    const password = document.getElementById('password').value;
+
+    //    // Create a base64 encoded header
+    //    const authHeader = `Basic ${btoa(`${email}:${password}`)}`;
+
+    //    const response = await fetch('/connect', {
+    //        method: 'POST',
+    //        headers: {
+    //            'Authorization': authHeader,
+    //            'Content-Type': 'application/json'
+    //        }
+    //    });
+
+    //    const data = await response.json();
+    //    console.log(data);
+    //});
+</script>
+</html>

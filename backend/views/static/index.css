@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  color: #333; display: flex;
+  flex-flow: column nowrap;
+}
+
+h1 {
+  color: #4CAF50;
+  font-size: 40px;
+  display: block;
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+  display: block;
+  text-align: center;
+}
+
+form {
+  color: #ea8181;
+}
