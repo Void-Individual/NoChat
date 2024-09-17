@@ -9,20 +9,57 @@
 <body>
     <h1>Welcome to the NoChat App</h1>
     <p>Create an account</p>
-    <form action="/create-account" method="POST">
+    <form action="" id="account-form">
         <label for="name">Email:</label>
         <input type="text" id="email" placeholder="Use a valid email" name="email" required>
         <br><br>
         <label for="username">Username:</label>
-        <textarea id="username" placeholder="Select a unique username" name="username" required></textarea>
+        <input id="username" placeholder="Select a unique username" name="username" required></input>
         <br><br>
         <label for="password">Password:</label>
-        <textarea id="password" name="password" required></textarea>
+        <input id="password" name="password" required></input>
         <br><br>
         <label for="phoneNumber">Phone Number:</label>
-        <textarea id="phoneNumber" placeholder="Optional" name="phoneNumber"></textarea>
+        <input id="phoneNumber" placeholder="Optional" name="phoneNumber"></input>
         <br><br>
-        <button type="submit">Submit</button>
+        <button type="submit" id="submit">Submit</button>
     </form>
+    <script>
+        const create = document.querySelector('#account-form');
+        create.addEventListener('submit', async (e) => {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            try {
+                const response = await fetch('/create-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        username,
+                        password,
+                        phoneNumber
+                    })
+                });
+
+                const data = await response.json();
+                //console.log(data);
+                alert(`${JSON.stringify(data)}`);
+                // If created successfully, redirect to the login page
+                if (response.status == 200) {
+                    setTimeout(async() => {
+                        window.location.href = '/login-page.html';
+                    }, 1000 * 2); // Return to the login page after 2 seconds
+                }
+            } catch (err) {
+                console.log('An error occured:', err.message);
+            }
+        });
+        </script>
 </body>
 </html>

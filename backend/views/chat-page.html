@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <link rel="stylesheet" href="/static/user-page.css">
+</head>
+<body>
+  <h1>This is a conversation between <%= user1 %> and <%= user2 %>!</h1>
+  <p>You have successfully opened a chat page</p>
+
+  <ul>
+    <% if (chat) { %>
+      <% chat.forEach(line => { %>
+          <li><%= line %> </li>
+        <% }) %>
+    <% } else { %>
+      <p>No conversation has started yet</p>
+    <% } %>
+  </ul>
+  <input id="password" placeholder="" name="password" required></input>
+
+  <!--<a href="/chat/<%= user1 %>" class="button-link">Chat</a>-->
+
+
+    <!--<script>
+        const create = document.querySelector('#chat');
+        create.addEventListener('click', async (e) => {
+            console.log('Running logout')
+            const response = await fetch('/disconnect', {
+                method: 'GET',
+                credentials: 'include' // Include cookies with the request
+            });
+            console.log(response);
+            setInterval(async () => {
+                if (response.ok) {
+                    alert('Logging out...');
+                    window.location.href = '/login-page.html'; // Optionally redirect after logout
+                }
+            }, 1000 * 1); // Log out after 2 seconds
+        });
+    </script>-->
+</body>
+</html>

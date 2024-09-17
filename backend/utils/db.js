@@ -18,6 +18,18 @@ class DBClient {
         console.log('Connected to mongodb');
         this.connected = true;
         this.db = this.client.db(database);
+        this.db.collection('users').createIndex(
+          { username: 1 },
+          {
+            collation: { locale: 'en', strength: 2 }
+          }
+        )
+        this.db.collection('files').createIndex(
+          { username: 1 },
+          {
+            collation: { locale: 'en', strength: 2 }
+          }
+        )
       }
     });
   }

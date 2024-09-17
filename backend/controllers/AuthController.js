@@ -55,8 +55,8 @@ class AuthController {
 
       const token = uuidV4();
       const key = `auth_${token}`;
-      // Set this key to be active for a duration of 1 hour (in seconds)
-      await redisClient.set(key, user._id.toString(), 60 * 60);
+      // Set this key to be active for a duration of 24 hours (in seconds)
+      await redisClient.set(key, user._id.toString(), 60 * 60 * 24);
       res.status(200).send({ token });
     } catch (err) {
       console.log('There was an error:', err.message);
@@ -66,7 +66,7 @@ class AuthController {
 
   static async getDisconnect(req, res) {
     try {
-      const token = req.header('X-Token');
+      const token = req.cookies.authToken;
       const _id = await redisClient.get(`auth_${token}`);
       const user = await findOneUser(dbClient, { _id });
       if (user) {

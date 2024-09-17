@@ -10,7 +10,44 @@
     <h1>Welcome, <%= user.username %>!</h1>
     <p>You have successfully logged in</p>
     <p>Your email: <%= user.email %></p>
+    <form action="/user/search" method="GET">
+        <input type="text" id="search" placeholder="Search for username" name="search" required>
+    </form>
+    <div id="search-results">
+        <% if (results) { %>
+            <ul>
+                <% results.forEach(result => { %>
+                    <% if (result.badMatch) { %>
+                        <li> <%= result.username %> </li>
+                    <% } else { %>
+                        <li>
+                            <a href="/user/<%= result.username %>"><%= result.username %></a>
+                        </li>
+                    <% } %>
+                <% }) %>
+            </ul>
+        <% } %>
+    </div>
 
-    <button action="/disconnect"></button>
+    <button type="button" id="logout">Logout</button>
+    <!--<button type="button" id="chat">Chat</button>-->
+
+    <script>
+        const create = document.querySelector('#logout');
+        create.addEventListener('click', async (e) => {
+            console.log('Running logout')
+            const response = await fetch('/disconnect', {
+                method: 'GET',
+                credentials: 'include' // Include cookies with the request
+            });
+            console.log(response);
+            setInterval(async () => {
+                if (response.ok) {
+                    alert('Logging out...');
+                    window.location.href = '/login-page.html'; // Optionally redirect after logout
+                }
+            }, 1000 * 1); // Log out after 2 seconds
+        });
+    </script>
 </body>
 </html>

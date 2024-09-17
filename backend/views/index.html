@@ -20,7 +20,7 @@
             });
             if (response.ok) {
               // If authenticated, redirect to the authenticated page
-              window.location.href = '/users/me'; // Replace with your protected page
+              window.location.href = '/user/me'; // Replace with your protected page
           } else {
               // If not authenticated, redirect to the login page
               window.location.href = '/login-page.html';
@@ -30,7 +30,7 @@
         // Optionally handle error cases here
         window.location.href = '/login-page.html'; // Fallback to login page on error
     }
-  }, 1000 * 3); // 5000ms = 5 seconds
+  }, 1000 * 1); // 5000ms = 5 seconds
     </script>
 </body>
 </html>

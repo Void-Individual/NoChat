@@ -30,61 +30,86 @@ async function findOneUser(client, query) {
   }
 }
 
+async function findUsers(client, { search }) {
+  try {
+    const searchQuery = {
+      //username: { $regex: new RegExp(query, 'i') } // Case-insensitive search for matching usernames
+      //username: { $text: {
+      //  $search: query,
+      //} } // Case-insensitive search for matching usernames
+      username: search,
+    };
+
+    const data = await client.db.collection('users').find(searchQuery).collation({
+      locale: 'en', strength: 2
+    }).toArray(); // Find all matching users
+    //const data = await client.db.collection('users').find().toArray();
+    //console.log({search});
+    //console.log(searchQuery);
+    //console.log(data);
+
+    return data.length > 0 ? data : null; // Return the list of users or null if none are found
+  } catch (err) {
+    console.log('Error finding users:', err.message);
+    return false;
+  }
+}
+
 class UsersController {
   static async postNew(req, res) {
-    const { email, username, phoneNumber } = req.body;
-    let { password } = req.body;
+    try {
+      const { email, username, phoneNumber } = req.body;
+      let { password } = req.body;
 
-    const missingFields = ['email','password','username'].filter(f => !req.body[f]);
-    if (missingFields.length) {
-      res.status(400).send({ error: `Missing ${missingFields[0]}` });
-      return;
-    }
+      const missingFields = ['email','password','username'].filter(f => !req.body[f]);
+      if (missingFields.length) {
+        res.status(400).send({ error: `Missing ${missingFields[0]}` });
+        return;
+      }
 
-    // Check if the email has been used
-    const checkEmail = await findOneUser(dbClient, { email });
-    if (checkEmail) {
-      res.status(400).send({
-        error: ' This Email already has an account',
-        checkEmail
+      // Check if the email has been used
+      const checkEmail = await findOneUser(dbClient, { email });
+      if (checkEmail) {
+        res.status(400).send({
+          error: ' This Email already has an account',
+         });
+        return;
+      } if (checkEmail === false) {
+        res.status(400).send({ error: 'An error occured' });
+        return;
+      }
+
+      // Check if the email has been used
+      const checkUser = await findOneUser(dbClient, { username });
+      if (checkUser) {
+        res.status(400).send({
+          error: 'This username has been taken',
        });
-      return;
-    } if (checkEmail === false) {
-      res.status(400).send({ error: 'An error occured' });
-      return;
+        return;
+      } if (checkUser === false) {
+        res.status(400).send({ error: 'An error occured' });
+        return;
+      }
+
+      password = hashSHA1(password);
+      const data = {
+        email,
+        password,
+        username,
+        phoneNumber: phoneNumber || null
+      };
+      const newUser = await dbClient.db.collection('users').insertOne(data);
+
+      //const endPointData = {
+      //  email,
+      //  id: newUser.insertedId,
+      //};
+
+      res.json({data: 'Your account has been created successfully'});
+    } catch (err) {
+      console.log('Error occured while creating user:', err.message);
+      res.status(500).send({ error: 'An error occured'});
     }
-
-    // Check if the email has been used
-    const checkUser = await findOneUser(dbClient, { username });
-    if (checkUser) {
-      res.status(400).send({
-        error: 'This username has been taken',
-        checkUser
-     });
-      return;
-    } if (checkUser === false) {
-      res.status(400).send({ error: 'An error occured' });
-      return;
-    }
-
-    password = hashSHA1(password);
-    const data = {
-      email,
-      password,
-      username,
-      phoneNumber: phoneNumber || null
-    };
-    const newUser = await dbClient.db.collection('users').insertOne(data);
-
-    //const endPointData = {
-    //  email,
-    //  id: newUser.insertedId,
-    //};
-
-    res.status(201).send({
-      note: 'A new account has been created for you',
-      userDetails: newUser.ops
-    });
   }
 
   static async login(req, res) {
@@ -102,19 +127,19 @@ class UsersController {
         const token = uuidV4();
         const key = `auth_${token}`;
 
-        // Store token in Redis with a 1-hour expiry (in seconds)
-        await redisClient.set(key, user._id.toString(), 60 * 60);
+        // Store token in Redis with a 24-hour expiry (in seconds)
+        await redisClient.set(key, user._id.toString(), 60 * 60 * 24);
 
         // Set the token in an HTTP-only cookie
         res.cookie('authToken', token, {
           httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-          maxAge: 1000 * 60 * 60, // Cookie expires in 1 hour (in milliseconds)
+          maxAge: 1000 * 60 * 60 * 24, // Cookie expires in 24 hours (in milliseconds)
           secure: false,    // Set to true in production (requires HTTPS)
           sameSite: 'Strict' // Prevents cross-site request forgery (CSRF) attacks
         });
 
         // Send the success page
-        res.redirect('/users/me');
+        res.redirect('/user/me');
       } else {
         res.status(401).send({ error: 'Email does not exist' });
         return;
@@ -126,18 +151,36 @@ class UsersController {
   }
 
   static async searchUser(req, res) {
-    const { username } = req.body;
+    // Access token from cookies
+    console.log('Running search');
+    const token = req.cookies.authToken;
+    if (!token) {
+      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      return;
+    }
+    const _id = await redisClient.get(`auth_${token}`);
+    const user = await findOneUser(dbClient, { _id });
+    const { search } = req.query;
 
-    await findOneUser(dbClient, { username }).then((user) => {
-      if (user) {
-        res.send('Profile Found!');
-      } else {
-        res.send('No profile matched this username')
-      }
-    }).catch((err) => {
+    try {
+      //console.log(search)
+      const results = await findUsers(dbClient, { search });
+      if (results) {
+      //console.log(results)
+      res.render('profile-page', { user, results: results || [] });
+    } else {
+        res.render('profile-page', {
+          user,
+          results: [{
+            username: 'No profile matched this username',
+            badMatch: true
+          }]
+      });
+    }
+    } catch (err) {
       console.log('An error occured while searching for user:', err.message);
-      res.status(400).send({ error: 'Error during search' });
-     });
+      res.render('profile-page', { user, results: results || [] });
+    }
   }
 }
 
@@ -153,8 +196,9 @@ class UserController {
 
       const _id = await redisClient.get(`auth_${token}`);
       const user = await findOneUser(dbClient, { _id });
+      const results = [];
       if (user) {
-        res.render('profile-page', { user });
+        res.render('profile-page', { user, results });
         //const { email } = user;
         //res.status(200).send(`User authenticated: ${{ id: _id, email }}`);
       } else {
@@ -164,6 +208,41 @@ class UserController {
     } catch (err) {
       console.log('An error occured:', err.message);
       res.status(400).send({ error: 'Error during disconnection' });
+    }
+  }
+
+  static async getUser(req, res) {
+    try {
+      console.log('Runniing getUser');
+      // Access token from cookies
+      const token = req.cookies.authToken;
+      if (!token) {
+        res.status(401).send({ error: 'Unauthorized, token missing' });
+        res.redirect('/login-page.html');
+        return;
+      }
+
+      const _id = await redisClient.get(`auth_${token}`);
+      const user = await findOneUser(dbClient, { _id });
+      if (!user) {
+        res.status(401).send({ error: 'Unauthorized' });
+        res.redirect('/login-page.html');
+        return;
+      }
+
+      const username = req.params.username;
+      //console.log('Username:', username)
+      const searchedUser = await findOneUser(dbClient, { username });
+      //console.log('Searched:', searchedUser)
+      if (searchedUser) {
+        //console.log('FOund user-page')
+        res.render('user-page', { user: searchedUser });
+      } else {
+        res.render('profile-page', { user, results: [] });
+      }
+    } catch (err) {
+      console.log('An error occured:', err.message);
+      res.status(400).send({ error: 'Error while getting user' });
     }
   }
 }

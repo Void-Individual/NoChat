@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/static/error-page.css">
+</head>
+<body>
+    <h1>Sorry, <%= error %>!</h1>
+    <p>You may need to login again</p>
+
+    <button type="button" id="login">Login page</button>
+
+    <script>
+        const create = document.querySelector('#login');
+        create.addEventListener('click', async (e) => {
+            console.log('Running logout')
+            const response = await fetch('/disconnect', {
+                method: 'GET',
+                credentials: 'include' // Include cookies with the request
+            });
+            console.log(response);
+            setInterval(async () => {
+                if (response.ok) {
+                    window.location.href = '/login-page.html'; // Optionally redirect after logout
+                }
+            }, 1000 * 1); // Log out after 2 seconds
+        });
+    </script>
+</body>
+</html>

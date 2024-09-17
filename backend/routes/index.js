@@ -11,7 +11,13 @@ router.get('/check-auth', checkAuth);
 router.post('/login', UsersController.login);
 router.post('/create-account', UsersController.postNew);
 
-router.get('/users/me', UserController.getMe);
+router.get('/user/me', UserController.getMe);
+router.get('/user/search', UsersController.searchUser);
+router.get('/user/:username', UserController.getUser);
+
+router.get('/chat/:user', AppController.startChat);
+
+
 router.get('/disconnect', AuthController.getDisconnect);
 
 

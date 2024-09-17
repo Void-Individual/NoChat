@@ -4,6 +4,8 @@ import { promisify } from 'util';
 class RedisClient {
   constructor() {
     this.client = redis.createClient();
+    this.subscriber = redis.createClient();
+    this.publisher = redis.createClient();
 
     this.connected = false; // Initialize to false
 
