@@ -7,22 +7,29 @@
     <link rel="stylesheet" href="/static/chat-page.css">
 </head>
 <body>
-  <h1>This is a conversation between <%= user1 %> and <%= user2 %>!</h1>
-  <p>You have successfully opened a chat page</p>
+  <h1>You (<%= user1 %>) are now chatting with <%= user2 %>!</h1>
+  <p>Please reload the page after you send a message *(We're working on fixing that ;>)</p>
 
   <!-- Add data attributes to store user values -->
   <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>"></div>
-  <ul id="chatList">
-    <% if (chat) { %>
+  <% if (chat && chat.length > 0) { %>
+    <ul id="chatList">
       <% chat.forEach(line => { %>
-          <li><%= line %> </li>
-        <% }) %>
+        <% if (line.split(':')[0] === user1) { %>
+          <li class="user"><%= line %> </li>
+        <% } else { %>
+          <li class="other"><%= line %> </li>
+        <% } %>
+      <% }) %>
+    </ul>
     <% } else { %>
-      <p>No conversation has started yet</p>
+      <p>No one has started a conversation yet</p>
     <% } %>
-  </ul>
-  <input id="message" placeholder="Type a message..." name="message"></input>
-  <button id="sendButton">Send</button>
+
+  <div class="chatContainer">
+    <input id="message" placeholder="Type a message..." name="message"></input>
+    <button id="sendButton">Send</button>
+  </div>
   <!--<a href="/chat/<%= user1 %>" class="button-link">Chat</a>-->
 
 
@@ -32,8 +39,8 @@
     const user2 = userDataElement.getAttribute('data-user2');
     console.log('User1:', user1);
     console.log('User2:', user2);
-    document.querySelector('#sendButton').addEventListener('click', async (e) => {
-      console.log('Running the pased text');
+    // Function to send message
+    async function sendMessage() {
       const message = document.getElementById('message').value.trim();
 
       if (message === '') {
@@ -43,19 +50,19 @@
 
       try {
         const response = await fetch(`/chat-send/${user2}`, {
-            method: 'POST',
-            credentials: 'include', // Include cookies with the request
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: `${user1}: ${message}` }),
-          });
+          method: 'POST',
+          credentials: 'include', // Include cookies with the request
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: `${user1}: ${message}` }),
+        });
 
-          if (response.ok) {
+        if (response.ok) {
           const data = await response.json();
 
           // Clear the input field
-          message.value = '';
+          document.getElementById('message').value = '';  // Fix clearing the input field
 
           // Append new message to chat list
           const chatList = document.getElementById('chatList');
@@ -66,12 +73,29 @@
         } else {
           console.error('Failed to send message:', response.statusText);
         }
-          console.log(response);
+        console.log(response);
 
       } catch (err) {
-        console.log('Error occured:', err.message);
+        console.log('Error occurred:', err.message);
+      }
+    }
+
+    // Add event listener to Send button
+    document.querySelector('#sendButton').addEventListener('click', sendMessage);
+
+    // Add event listener to the Enter key
+    document.getElementById('message').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage();
       }
     });
+
+    // Scrol the entire page's content to the bottom immediately
+    window.onload = function() {
+      const chatList = document.getElementById('chatList');
+      chatList.scrollTop = chatList.scrollHeight;
+    };
+
   </script>
 </body>
 </html>

@@ -18,6 +18,17 @@ p {
   text-align: center;
 }
 
+#logout {
+  height: 30px;           /* Match the height of the message input */
+  padding: 0 10px;        /* Add some padding for a nice look */
+  border: 1px solid #ccc; /* Same border as the message input */
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;        /* Rounded corners on all sides */
+  margin-right: auto;         /* Push the button to the right */
+  display: inline-block;
+}
+
 .search{
   display: none;
 }

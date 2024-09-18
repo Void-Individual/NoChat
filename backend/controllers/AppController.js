@@ -78,6 +78,10 @@ class AppController {
     }
     const _id = await redisClient.get(`auth_${token}`);
     const mainUser = await findOneUser(dbClient, { _id });
+    if (!mainUser) {
+      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      return;
+    }
     const { user } = req.params;
 
     //const channel = `${mainUser.username}+${user}`;
@@ -90,7 +94,7 @@ class AppController {
   }
 
   static async sendChat(req, res) {
-    console.log('Running startChat');
+    console.log('Running SendChat');
     const token = req.cookies.authToken;
     if (!token) {
       res.status(401).send({ error: 'Unauthorized, You need to login again' });
@@ -98,6 +102,11 @@ class AppController {
     }
     const _id = await redisClient.get(`auth_${token}`);
     const mainUser = await findOneUser(dbClient, { _id });
+    if (!mainUser) {
+      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      return;
+    }
+    console.log('main is:', mainUser)
     const { user } = req.params;
     const { message } = req.body;
     const allChannels = await dbClient.subscribedChannels();

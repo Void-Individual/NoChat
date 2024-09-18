@@ -42,7 +42,7 @@ class DBClient {
         console.log('EMpty channels');
         return {};
       }
-      console.log(subscribedChannels);
+      //console.log(subscribedChannels);
       return subscribedChannels.data;
       //return {};
     } catch (err) {

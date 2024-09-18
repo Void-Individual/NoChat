@@ -12,6 +12,7 @@
     <p>Your email: <%= user.email %></p>
     <form action="/user/search" method="GET">
         <input type="text" id="search" placeholder="Search for username" name="search" required>
+        <button type="submit">Search</button>
     </form>
     <div id="search-results">
         <% if (results) { %>

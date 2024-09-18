@@ -32,21 +32,25 @@ async function findOneUser(client, query) {
 
 async function findUsers(client, { search }) {
   try {
-    const searchQuery = {
-      //username: { $regex: new RegExp(query, 'i') } // Case-insensitive search for matching usernames
-      //username: { $text: {
-      //  $search: query,
-      //} } // Case-insensitive search for matching usernames
-      username: search,
-    };
+    const allData = await client.db.collection('users').find().toArray();
 
-    const data = await client.db.collection('users').find(searchQuery).collation({
-      locale: 'en', strength: 2
-    }).toArray(); // Find all matching users
-    //const data = await client.db.collection('users').find().toArray();
-    //console.log({search});
-    //console.log(searchQuery);
-    //console.log(data);
+    // Filter users based on the search string
+    const data = allData.filter(user => user.username.includes(search));
+    //const searchQuery = {
+    //  //username: { $regex: new RegExp(query, 'i') } // Case-insensitive search for matching usernames
+    //  //username: { $text: {
+    //  //  $search: query,
+    //  //} } // Case-insensitive search for matching usernames
+    //  username: search,
+    //};
+
+    //const data = await client.db.collection('users').find(searchQuery).collation({
+    //  locale: 'en', strength: 2
+    //}).toArray(); // Find all matching users
+    ////const data = await client.db.collection('users').find().toArray();
+    ////console.log({search});
+    ////console.log(searchQuery);
+    ////console.log(data);
 
     return data.length > 0 ? data : null; // Return the list of users or null if none are found
   } catch (err) {
@@ -160,6 +164,10 @@ class UsersController {
     }
     const _id = await redisClient.get(`auth_${token}`);
     const user = await findOneUser(dbClient, { _id });
+    if (!user) {
+      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      return;
+    }
     const { search } = req.query;
 
     try {
@@ -168,6 +176,7 @@ class UsersController {
       if (results) {
       //console.log(results)
       res.render('profile-page', { user, results: results || [] });
+      return;
     } else {
         res.render('profile-page', {
           user,
@@ -202,7 +211,7 @@ class UserController {
         //const { email } = user;
         //res.status(200).send(`User authenticated: ${{ id: _id, email }}`);
       } else {
-        res.status(401).send({ error: 'Unauthorized' });
+        res.status(401).send({ error: 'Unauthorized, you need to log in' });
         return;
       }
     } catch (err) {
@@ -218,15 +227,14 @@ class UserController {
       const token = req.cookies.authToken;
       if (!token) {
         res.status(401).send({ error: 'Unauthorized, token missing' });
-        res.redirect('/login-page.html');
         return;
       }
 
       const _id = await redisClient.get(`auth_${token}`);
       const user = await findOneUser(dbClient, { _id });
       if (!user) {
-        res.status(401).send({ error: 'Unauthorized' });
-        res.redirect('/login-page.html');
+        res.status(401).send({ error: 'Unauthorized, you need to login' });
+        //res.redirect('/login-page.html');
         return;
       }
 

@@ -129,6 +129,10 @@ class FilesController {
       }
       const _id = await redisClient.get(`auth_${token}`);
       const mainUser = await findOneUser(dbClient, { _id });
+      if (!mainUser) {
+        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        return;
+      }
 
       const { channel, message, user1, user2 } = req.query;
 
@@ -175,6 +179,10 @@ class FilesController {
       }
       const _id = await redisClient.get(`auth_${token}`);
       const mainUser = await findOneUser(dbClient, { _id });
+      if (!mainUser) {
+        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        return;
+      }
 
       const { channel, user1, user2 } = req.query;
 

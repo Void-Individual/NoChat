@@ -1,25 +1,24 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
-  color: #333; display: flex;
+  color: #333;
+  display: flex;
   flex-flow: column nowrap;
 }
 
+
 h1 {
-  color: #4CAF50;
-  font-size: 40px;
   display: block;
   text-align: center;
+  color: #4CAF50;
+  font-size: 40px;
 }
 
 p {
-  font-size: 18px;
   display: block;
-  text-align: center;
-}
+  text-align: left;
+  font-size: 18px;
 
-.search{
-  display: none;
 }
 
 .button-link {
@@ -38,24 +37,81 @@ p {
   background-color: #0056b3;
 }
 
+/* Chat input and send button container */
+.chatContainer {
+  display: flex;
+  flex-flow: row nowrap;  /* Set the direction to row for horizontal alignment */
+  align-items: center;    /* Vertically align items */
+  justify-content: space-between;  /* Push the send button to the right */
+  margin-top: 10px;
+  width: 100%;  /* Make the container full width */
+}
+
+/*#message, #sendButton {
+  font-size: 14px;
+  margin: 10px 0;
+}*/
+
 #message {
-  width: 200px; /* Adjust the width as needed */
-  height: 30px; /* Adjust the height if necessary */
-  padding: 5px; /* Adjust padding to fit content */
-  font-size: 14px; /* Adjust font size */
-  border: 1px solid #ccc; /* Border styling */
-  background-color: #f9f9f9; /* Background color */
-  margin: 10px 0; /* Margin around the input field */
-  text-align: left; /* Text alignment inside the input field */
+  flex-grow: 1;           /* Allow the message box to take all available space */
+  height: 40px;           /* Set height to match the send button */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-right: none;        /* Remove right border to eliminate the gap */
+  background-color: #f9f9f9;
+  border-radius: 5px 0 0 5px; /* Rounded corners, but flat on the right side */
 }
 
 #sendButton {
-  width: 200px; /* Adjust the width as needed */
-  height: 30px; /* Adjust the height if necessary */
-  padding: 5px; /* Adjust padding to fit content */
-  font-size: 14px; /* Adjust font size */
-  /*border: 1px solid #ccc; Border styling*/
-  /*background-color: #f9f9f9; Background color*/
-  margin: 10px 0; /* Margin around the input field */
-  text-align: left; /* Text alignment inside the input field */
+  height: 40px;           /* Match the height of the message input */
+  padding: 0 20px;        /* Add some padding for a nice look */
+  border: 1px solid #ccc; /* Same border as the message input */
+  background-color: #007bff;
+  color: white;
+  border-radius: 0 5px 5px 0; /* Rounded corners on the right */
+  margin-left: 0;           /* No margin to remove any gaps */
+  display: inline-block;
+}
+
+#sendButton:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+#chatList {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: scroll;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+#chatList li {
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  word-wrap: break-word;
+}
+
+#chatList li.user {
+  background-color: #d4edda;
+  text-align: right;
+}
+
+#chatList li.other {
+  background-color: #f8d7da;
+  text-align: left;
+}
+
+/* Customize scrollbar */
+#chatList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chatList::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
 }
