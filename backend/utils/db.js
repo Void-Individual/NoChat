@@ -34,6 +34,40 @@ class DBClient {
     });
   }
 
+  async subscribedChannels() {
+    try {
+      const subscribedChannels = await this.db.collection('files').findOne({ name: 'subscribedChannels'});
+
+      if (!subscribedChannels) {
+        console.log('EMpty channels');
+        return {};
+      }
+      console.log(subscribedChannels);
+      return subscribedChannels.data;
+      //return {};
+    } catch (err) {
+      console.log('Error getting the channels:', err.message);
+      return {}
+    }
+  }
+
+  async updateChannels(subscribedChannels) {
+    const name = 'subscribedChannels';
+
+    try {
+      // Update the channels document or insert it if it doesn't exist
+      await this.db.collection('files').updateOne(
+        { name }, // Query to find the document by name
+        { $set: { data: subscribedChannels } }, // Update the data field with new channels
+        { upsert: true } // Insert a new document if it doesn't exist
+        );
+        console.log('Channels updated successfully');
+    } catch (err) {
+      console.log('An error occured while handling the channels: ', err.message);
+      return;
+    }
+  }
+
   isAlive() {
     return this.connected;
   }

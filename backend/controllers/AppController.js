@@ -4,7 +4,6 @@ import { v4 as uuidV4 } from 'uuid';
 
 const { ObjectId } = require('mongodb');
 
-
 const waitConnection = (client) => new Promise((resolve, reject) => {
   let i = 0;
   const repeatFct = async () => {
@@ -40,8 +39,6 @@ async function findOneUser(client, query) {
     return false;
   }
 }
-
-let subscribedChannels = {};
 
 class AppController {
   static async getStatus(req, res) {
@@ -84,15 +81,12 @@ class AppController {
     const { user } = req.params;
 
     //const channel = `${mainUser.username}+${user}`;
-    console.log('SUb:', subscribedChannels)
-    subscribedChannels = checkChannels(subscribedChannels, mainUser.username, user);
+    //console.log('SUb:', subscribedChannels)
+    const channel = await checkChannels(mainUser.username, user);
+    console.log('checked channels')
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
 
-    res.render('chat-page', { user1: mainUser.username, user2: user, chat: [
-      'Tolu: Hello',
-      'Void: Hoh... Hi',
-      'Tolu: How are you?'
-    ]});
+    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user1=${encodeURIComponent(mainUser.username)}&user2=${encodeURIComponent(user)}`);
   }
 
   static async sendChat(req, res) {
@@ -105,37 +99,42 @@ class AppController {
     const _id = await redisClient.get(`auth_${token}`);
     const mainUser = await findOneUser(dbClient, { _id });
     const { user } = req.params;
-
-    const channel = `${mainUser.username}+${user}`;
+    const { message } = req.body;
+    const allChannels = await dbClient.subscribedChannels();
+    const channel = allChannels[mainUser.username][user];
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
-    if (!subscribedChannels.includes(channel)) {
-      startChatChannel(channel);
-    }
 
-    res.render('chat-page', { user1: mainUser.username, user2: user, chat: [
-      'Tolu: Hello',
-      'Void: Hoh... Hi',
-      'Tolu: How are you?'
-    ]});
+    sendMessage(channel, message);
+    res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user1=${encodeURIComponent(mainUser.username)}&user2=${encodeURIComponent(user)}`);
+
+
+    //res.render('chat-page', { user1: mainUser.username, user2: user, chat: [
+    //  'Tolu: Hello',
+    //  'Void: Hoh... Hi',
+    //  'Tolu: How are you?'
+    //]});
   }
 }
 
-function checkChannels(channels, user1, user2) {
+async function checkChannels(user1, user2) {
    // Ensure both users exist in the channels dictionary
-   if (!channels[user1]) {
-    channels[user1] = {};
+   const subscribedChannels = await dbClient.subscribedChannels();
+   if (!subscribedChannels[user1]) {
+    subscribedChannels[user1] = {};
   }
-  if (!channels[user2]) {
-    channels[user2] = {};
+  if (!subscribedChannels[user2]) {
+    subscribedChannels[user2] = {};
   }
 
-  if (!channels[user1][user2] && !channels[user2][user1]) {
+  if (!subscribedChannels[user1][user2] && !subscribedChannels[user2][user1]) {
     const newChannel = uuidV4();
-    channels[user1][user2] = newChannel;
-    channels[user2][user1] = newChannel;
+    subscribedChannels[user1][user2] = newChannel;
+    subscribedChannels[user2][user1] = newChannel;
     startChatChannel(newChannel);
+    await dbClient.updateChannels(subscribedChannels);
+    console.log('Started a new channel for:', user1, user2);
   }
-  return channels;
+  return subscribedChannels[user1][user2];
 }
 
 redisClient.publisher.on('error', (err) => {

@@ -119,6 +119,83 @@ async function createNewFolder(client, fileData) {
 }
 
 class FilesController {
+  static async saveChatFile(req, res) {
+    console.log('Running saveChatFile');
+    try {
+      const token = req.cookies.authToken;
+      if (!token) {
+        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        return;
+      }
+      const _id = await redisClient.get(`auth_${token}`);
+      const mainUser = await findOneUser(dbClient, { _id });
+
+      const { channel, message, user1, user2 } = req.query;
+
+      console.log(`Channel: ${channel}, for ${user1} and ${user2}, message: ${message}`);
+      // Find or create the channel document
+      let channelFile = await findOneFile(dbClient, { name: channel });
+      if (!channelFile) {
+        const channelData = {
+          name: channel,
+          users: [user1, user2],
+          data: [] // Initialize data as an array to store messages
+        }
+        const result = await dbClient.db.collection('files').insertOne(channelData)
+        channelFile = result.ops[0];
+      }
+
+      // Append the message to the temp file
+      const folderPath = checkLocalPath();
+      const fileName = channel;
+      const filePath = path.join(folderPath, fileName);
+      const decodedData = decodeBase64Data(message);
+      fs.appendFileSync(filePath, decodedData);
+
+      // Update the channel document in the database with the new message
+    const updatedData = [...(channelFile.data || []), message];
+    await dbClient.db.collection('files').updateOne(
+      { name: channel },
+      { $set: { data: updatedData } }
+    );
+    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user1=${encodeURIComponent(user1)}&user2=${encodeURIComponent(user2)}`)
+    } catch (err) {
+      console.log('An error occured:', err.message);
+      res.status(500).send({ error: 'An error occurred while saving the message' });
+    }
+  }
+
+  static async getChatFile(req, res) {
+    console.log('Running getChatFile');
+    try {
+      const token = req.cookies.authToken;
+      if (!token) {
+        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        return;
+      }
+      const _id = await redisClient.get(`auth_${token}`);
+      const mainUser = await findOneUser(dbClient, { _id });
+
+      const { channel, user1, user2 } = req.query;
+
+      console.log(`Channel: ${channel}, for ${user1} and ${user2}`);
+      // Find or create the channel document
+      let channelFile = await findOneFile(dbClient, { name: channel });
+      if (!channelFile) {
+        // If no channel document exists, initialize an empty array for chat messages
+        channelFile = { data: [] };
+      }
+
+      // Retrieve messages from the channel document
+      const messages = channelFile.data || [];
+
+      res.render('chat-page', { user1, user2, chat: messages });
+    } catch (err) {
+      console.log('An error occured:', err.message);
+      res.status(500).send({ error: 'An error occurred while getting the messages' });
+    }
+  }
+
   static async postUpload(req, res) {
     try {
       const token = req.header('X-Token');

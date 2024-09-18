@@ -1,0 +1,61 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  color: #333; display: flex;
+  flex-flow: column nowrap;
+}
+
+h1 {
+  color: #4CAF50;
+  font-size: 40px;
+  display: block;
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+  display: block;
+  text-align: center;
+}
+
+.search{
+  display: none;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.button-link:hover {
+  background-color: #0056b3;
+}
+
+#message {
+  width: 200px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height if necessary */
+  padding: 5px; /* Adjust padding to fit content */
+  font-size: 14px; /* Adjust font size */
+  border: 1px solid #ccc; /* Border styling */
+  background-color: #f9f9f9; /* Background color */
+  margin: 10px 0; /* Margin around the input field */
+  text-align: left; /* Text alignment inside the input field */
+}
+
+#sendButton {
+  width: 200px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height if necessary */
+  padding: 5px; /* Adjust padding to fit content */
+  font-size: 14px; /* Adjust font size */
+  /*border: 1px solid #ccc; Border styling*/
+  /*background-color: #f9f9f9; Background color*/
+  margin: 10px 0; /* Margin around the input field */
+  text-align: left; /* Text alignment inside the input field */
+}

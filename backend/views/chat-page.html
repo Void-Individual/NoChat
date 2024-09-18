@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
-    <link rel="stylesheet" href="/static/user-page.css">
+    <link rel="stylesheet" href="/static/chat-page.css">
 </head>
 <body>
   <h1>This is a conversation between <%= user1 %> and <%= user2 %>!</h1>
   <p>You have successfully opened a chat page</p>
 
-  <ul>
+  <!-- Add data attributes to store user values -->
+  <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>"></div>
+  <ul id="chatList">
     <% if (chat) { %>
       <% chat.forEach(line => { %>
           <li><%= line %> </li>
@@ -19,27 +21,57 @@
       <p>No conversation has started yet</p>
     <% } %>
   </ul>
-  <input id="password" placeholder="" name="password" required></input>
-
+  <input id="message" placeholder="Type a message..." name="message"></input>
+  <button id="sendButton">Send</button>
   <!--<a href="/chat/<%= user1 %>" class="button-link">Chat</a>-->
 
 
-    <!--<script>
-        const create = document.querySelector('#chat');
-        create.addEventListener('click', async (e) => {
-            console.log('Running logout')
-            const response = await fetch('/disconnect', {
-                method: 'GET',
-                credentials: 'include' // Include cookies with the request
-            });
-            console.log(response);
-            setInterval(async () => {
-                if (response.ok) {
-                    alert('Logging out...');
-                    window.location.href = '/login-page.html'; // Optionally redirect after logout
-                }
-            }, 1000 * 1); // Log out after 2 seconds
-        });
-    </script>-->
+  <script>
+    const userDataElement = document.getElementById('userData');
+    const user1 = userDataElement.getAttribute('data-user1');
+    const user2 = userDataElement.getAttribute('data-user2');
+    console.log('User1:', user1);
+    console.log('User2:', user2);
+    document.querySelector('#sendButton').addEventListener('click', async (e) => {
+      console.log('Running the pased text');
+      const message = document.getElementById('message').value.trim();
+
+      if (message === '') {
+        alert('Please type a message.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/chat-send/${user2}`, {
+            method: 'POST',
+            credentials: 'include', // Include cookies with the request
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: `${user1}: ${message}` }),
+          });
+
+          if (response.ok) {
+          const data = await response.json();
+
+          // Clear the input field
+          message.value = '';
+
+          // Append new message to chat list
+          const chatList = document.getElementById('chatList');
+          const newMessage = document.createElement('li');
+          newMessage.textContent = `You: ${data.message}`;
+          chatList.appendChild(newMessage);
+
+        } else {
+          console.error('Failed to send message:', response.statusText);
+        }
+          console.log(response);
+
+      } catch (err) {
+        console.log('Error occured:', err.message);
+      }
+    });
+  </script>
 </body>
 </html>
