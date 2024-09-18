@@ -94,6 +94,8 @@ class AppController {
   }
 
   static async sendChat(req, res) {
+    const { io } = require('../server'); // Import io for socket.io communication
+
     console.log('Running SendChat');
     const token = req.cookies.authToken;
     if (!token) {
@@ -112,16 +114,12 @@ class AppController {
     const allChannels = await dbClient.subscribedChannels();
     const channel = allChannels[mainUser.username][user];
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
-
-    sendMessage(channel, message);
+    // Ensure that _server.io is defined
+    if (!io) {
+      return res.status(500).json({ error: 'Socket.io not initialized' });
+    }
+    sendMessage(channel, message, mainUser.username);
     res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user1=${encodeURIComponent(mainUser.username)}&user2=${encodeURIComponent(user)}`);
-
-
-    //res.render('chat-page', { user1: mainUser.username, user2: user, chat: [
-    //  'Tolu: Hello',
-    //  'Void: Hoh... Hi',
-    //  'Tolu: How are you?'
-    //]});
   }
 }
 
@@ -155,24 +153,36 @@ redisClient.subscriber.on('error', (err) => {
 });
 
 // Function to publish a message
-function sendMessage(channel, message) {
+function sendMessage(channel, message, sender) {
+  const { io } = require('../server'); // Import io for socket.io communication
+
   redisClient.publisher.publish(channel, message, (err, reply) => {
     if (err) {
       console.error('Error publishing message:', err);
     } else {
       console.log(`Message published to ${channel}: ${message}`);
+      // Emit the message via Socket.io to both users in the channel
+      io.to(channel).emit('newMessage', { sender, message });
     }
   });
 }
 
 function startChatChannel(channel) {
-  redisClient.subscriber.subscribe(channel);
+  const { io } = require('../server'); // Import io for socket.io communication
+
+  redisClient.subscriber.subscribe((err, reply) => {
+    if (err) {
+      console.error('Failed to subscribe to channel:', err);
+    } else {
+      console.log(`Subscribed to ${channel}:`, reply);
+      io.to(channel).emit('newMessage', message); // Ensure _server.io is accessible here
+    }
+  });
 
   // Listen for messages on the subscribed channel
   redisClient.subscriber.on('message', (channel, message) => {
     console.log(`Received message from ${channel}: ${message}`);
   });
-  console.log('Subscribed to the channel:', channel);
 }
 
 // Function to stop the subscriber

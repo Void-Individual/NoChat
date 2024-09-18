@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
     <link rel="stylesheet" href="/static/chat-page.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <h1>You (<%= user1 %>) are now chatting with <%= user2 %>!</h1>
   <p>Please reload the page after you send a message *(We're working on fixing that ;>)</p>
 
   <!-- Add data attributes to store user values -->
-  <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>"></div>
+  <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>" channel="<%= channel %>"></div>
   <% if (chat && chat.length > 0) { %>
     <ul id="chatList">
       <% chat.forEach(line => { %>
         <% if (line.split(':')[0] === user1) { %>
-          <li class="user"><%= line %> </li>
+          <li class="user">You: <%= (line.split(':')[1]) %> </li>
         <% } else { %>
           <li class="other"><%= line %> </li>
         <% } %>
@@ -37,11 +38,36 @@
     const userDataElement = document.getElementById('userData');
     const user1 = userDataElement.getAttribute('data-user1');
     const user2 = userDataElement.getAttribute('data-user2');
-    console.log('User1:', user1);
-    console.log('User2:', user2);
+    const channel = userDataElement.getAttribute('channel');
+
+    const socket = io(); // Initialize Socket.io connection
+    // Join the chat channel
+    socket.emit('joinChannel', channel);
+
+    // Listen for new messages from the server
+    socket.on('newMessage', ({ sender, message }) => {
+      const chatList = document.getElementById('chatList');
+      const newMessage = document.createElement('li');
+
+      if (sender === user1) {
+        newMessage.className = 'user';
+        newMessage.textContent = `${message}`;
+      } else {
+        newMessage.className = 'other';
+        newMessage.textContent = `${message}`;
+      }
+
+      chatList.appendChild(newMessage);
+
+      // Scroll to the bottom of the chat after receiving a new message
+      chatList.scrollTop = chatList.scrollHeight;
+    });
+
+
     // Function to send message
     async function sendMessage() {
-      const message = document.getElementById('message').value.trim();
+      const messageInput = document.getElementById('message')
+      const message = messageInput.value.trim();
 
       if (message === '') {
         alert('Please type a message.');
@@ -57,32 +83,28 @@
           },
           body: JSON.stringify({ message: `${user1}: ${message}` }),
         });
-
         if (response.ok) {
-          const data = await response.json();
-
-          // Clear the input field
-          document.getElementById('message').value = '';  // Fix clearing the input field
+          // Clear the input field after the message sends
+          messageInput.value = '';  // Fix clearing the input field
+          console.log('Cleared the field')
 
           // Append new message to chat list
-          const chatList = document.getElementById('chatList');
-          const newMessage = document.createElement('li');
-          newMessage.textContent = `You: ${data.message}`;
-          chatList.appendChild(newMessage);
+          //const chatList = document.getElementById('chatList');
+          //const newMessage = document.createElement('li');
+          //newMessage.textContent = `You: ${data.message}`;
+          //chatList.appendChild(newMessage);
 
         } else {
           console.error('Failed to send message:', response.statusText);
         }
         console.log(response);
-
       } catch (err) {
-        console.log('Error occurred:', err.message);
+        console.log('Error occurred heere:', err);
       }
     }
 
     // Add event listener to Send button
     document.querySelector('#sendButton').addEventListener('click', sendMessage);
-
     // Add event listener to the Enter key
     document.getElementById('message').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
@@ -90,12 +112,11 @@
       }
     });
 
-    // Scrol the entire page's content to the bottom immediately
+    // Scroll the entire page's content to the bottom immediately
     window.onload = function() {
       const chatList = document.getElementById('chatList');
       chatList.scrollTop = chatList.scrollHeight;
     };
-
   </script>
 </body>
 </html>

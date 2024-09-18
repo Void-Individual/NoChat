@@ -197,7 +197,7 @@ class FilesController {
       // Retrieve messages from the channel document
       const messages = channelFile.data || [];
 
-      res.render('chat-page', { user1, user2, chat: messages });
+      res.render('chat-page', { user1, user2, channel, chat: messages });
     } catch (err) {
       console.log('An error occured:', err.message);
       res.status(500).send({ error: 'An error occurred while getting the messages' });
