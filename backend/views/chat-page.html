@@ -9,12 +9,11 @@
 </head>
 <body>
   <h1>You (<%= user1 %>) are now chatting with <%= user2 %>!</h1>
-  <p>Please reload the page after you send a message *(We're working on fixing that ;>)</p>
 
   <!-- Add data attributes to store user values -->
   <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>" channel="<%= channel %>"></div>
-  <% if (chat && chat.length > 0) { %>
-    <ul id="chatList">
+  <ul id="chatList">
+    <% if (chat && chat.length > 0) { %>
       <% chat.forEach(line => { %>
         <% if (line.split(':')[0] === user1) { %>
           <li class="user">You: <%= (line.split(':')[1]) %> </li>
@@ -22,10 +21,10 @@
           <li class="other"><%= line %> </li>
         <% } %>
       <% }) %>
-    </ul>
     <% } else { %>
       <p>No one has started a conversation yet</p>
     <% } %>
+  </ul>
 
   <div class="chatContainer">
     <input id="message" placeholder="Type a message..." name="message"></input>

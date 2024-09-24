@@ -6,6 +6,16 @@ import FilesController from '../controllers/FilesController';
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+  res.render('index');
+});
+
+// Create aendpoint to retrieve any html file that is called from another html file
+router.get('/public/:path', (req, res) => {
+  const { path } = req.params;
+  res.render(path);
+});
+
 router.get('/check-auth', checkAuth);
 
 router.post('/login', UsersController.login);

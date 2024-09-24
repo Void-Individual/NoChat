@@ -108,7 +108,6 @@ class AppController {
       res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
-    console.log('main is:', mainUser)
     const { user } = req.params;
     const { message } = req.body;
     const allChannels = await dbClient.subscribedChannels();

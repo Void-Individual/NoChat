@@ -34,19 +34,19 @@ io.on('connection', (socket) => {
   });
 });
 
-// To use .html files, but take advantage of dynamic ejs templating...
-app.engine('html', require('ejs').renderFile);
-// Set the view engine to ejs
-app.set('view engine', 'html'); // But set it to html for html files
-// Set the 'views' directory
-app.set('views', path.join(__dirname, '/views'));
-
 // Middleware to parse JSON bodies
 app.use(express.json(), express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Use a cookie parser middleware
 
+// To use .html files, but take advantage of dynamic ejs templating...
+app.engine('html', require('ejs').renderFile);
+// Set the view engine to ejs
+app.set('view engine', 'html'); // But set it to html for html files
+// Set the 'views' directory for html files to be called with ejs
+app.set('views', path.join(__dirname, 'views'));
+
 // Serve static files
-app.use('/', express.static(path.join(__dirname, '/views')));
+app.use('/static', express.static(path.join(__dirname, 'static')));
 
 // Load the routes
 app.use('/', routes);

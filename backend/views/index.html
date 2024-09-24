@@ -23,12 +23,12 @@
               window.location.href = '/user/me'; // Replace with your protected page
           } else {
               // If not authenticated, redirect to the login page
-              window.location.href = '/login-page.html';
+              window.location.href = '/public/login-page';
           }
       } catch (error) {
         console.error('Error checking authentication:', error);
         // Optionally handle error cases here
-        window.location.href = '/login-page.html'; // Fallback to login page on error
+        window.location.href = '/public/login-page'; // Fallback to login page on error
     }
   }, 1000 * 1); // 5000ms = 5 seconds
     </script>

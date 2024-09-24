@@ -53,8 +53,8 @@
                 // If created successfully, redirect to the login page
                 if (response.status == 200) {
                     setTimeout(async() => {
-                        window.location.href = '/login-page.html';
-                    }, 1000 * 2); // Return to the login page after 2 seconds
+                        window.location.href = '/public/login-page';
+                    }, 1000 * 1); // Return to the login page after 2 seconds
                 }
             } catch (err) {
                 console.log('An error occured:', err.message);
