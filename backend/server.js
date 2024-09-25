@@ -46,10 +46,30 @@ app.set('view engine', 'html'); // But set it to html for html files
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files
-app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use('/static', (req, res, next) => {
+  const filePath = path.join(__dirname, 'static', req.url);
+  console.log(`Static file being served: ${filePath}`);
 
-// Load the routes
-app.use('/', routes);
+  // Serve the static file
+  express.static(path.join(__dirname, 'static'))(req, res, (err) => {
+    if (err) {
+        console.error(`Error serving static file: ${err}`);
+        next(err); // Pass the error to the next middleware (optional)
+    } else if (res.statusCode === 404) {
+        console.error(`Static file not found: ${filePath}`);
+        res.status(404).send('File not found'); // Handle the 404 error
+    } else {
+        next(); // No error, proceed as usual
+    }
+});
+});
+//app.use('/static', express.static(path.join(__dirname, 'static')));
+
+// Middleware to log each route being called before loading
+app.use('/', (req, res, next) => {
+  console.log(`Route called: ${req.method} ${req.url}`);
+  routes(req, res, next); // Call the routes middleware after logging
+});
 
 // Start the server and listen at selected port
 server.listen(port, '0.0.0.0', () => {
