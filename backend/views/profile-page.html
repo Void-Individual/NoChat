@@ -42,7 +42,7 @@
                 credentials: 'include' // Include cookies with the request
             });
             console.log(response);
-            setInterval(async () => {
+            setTimeout(() => {
                 if (response.ok) {
                     alert('Logging out...');
                     window.location.href = '/public/login-page.html'; // Optionally redirect after logout
