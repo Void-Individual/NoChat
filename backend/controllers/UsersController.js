@@ -34,8 +34,8 @@ async function findUsers(client, { search }) {
   try {
     const allData = await client.db.collection('users').find().toArray();
 
-    // Filter users based on the search string
-    const data = allData.filter(user => user.username.includes(search));
+    // Filter users based on the search string ( Run it to search regardless of case setting)
+    const data = allData.filter(user => user.username.toLowerCase().includes(search.toLowerCase()));
     //const searchQuery = {
     //  //username: { $regex: new RegExp(query, 'i') } // Case-insensitive search for matching usernames
     //  //username: { $text: {
