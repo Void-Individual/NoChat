@@ -83,10 +83,13 @@ class AppController {
       return;
     }
     const { user } = req.params;
+    const otherUser = await findOneUser(dbClient, { username: user });
+    if (!otherUser) {
+      res.status(401).send({ error: 'The other party does not have an account' });
+      return;
+    }
 
-    //const channel = `${mainUser.username}+${user}`;
-    //console.log('SUb:', subscribedChannels)
-    const channel = await checkChannels(mainUser.username, user);
+    const channel = await checkChannels(mainUser, otherUser);
     console.log('checked channels')
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
 
@@ -122,10 +125,13 @@ class AppController {
   }
 }
 
-async function checkChannels(user1, user2) {
-   // Ensure both users exist in the channels dictionary
-   const subscribedChannels = await dbClient.subscribedChannels();
-   if (!subscribedChannels[user1]) {
+async function checkChannels(mainUser, otherUser) {
+  const user1 = mainUser.username;
+  const user2 = otherUser.username;
+
+  // Ensure both users exist in the channels dictionary
+  const subscribedChannels = await dbClient.subscribedChannels();
+  if (!subscribedChannels[user1]) {
     subscribedChannels[user1] = {};
   }
   if (!subscribedChannels[user2]) {
@@ -138,6 +144,9 @@ async function checkChannels(user1, user2) {
     subscribedChannels[user2][user1] = newChannel;
     startChatChannel(newChannel);
     await dbClient.updateChannels(subscribedChannels);
+    // Add the new user to the list of contacts for both user after a channel has been created
+    
+
     console.log('Started a new channel for:', user1, user2);
   }
   return subscribedChannels[user1][user2];
