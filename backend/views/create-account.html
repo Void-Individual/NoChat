@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="/static/login-page.css">
+    <link rel="stylesheet" href="../static/create_login_account.css">
 </head>
-<body>
-    <h1>Welcome to the NoChat App</h1>
-    <p>Create an account</p>
-    <form action="" id="account-form">
-        <label for="name">Email:</label>
-        <input type="text" id="email" placeholder="Use a valid email" name="email" required>
-        <br><br>
-        <label for="username">Username:</label>
-        <input id="username" placeholder="Select a unique username" name="username" required></input>
-        <br><br>
-        <label for="password">Password:</label>
-        <input id="password" name="password" autocapitalize="off" required></input>
-        <br><br>
-        <label for="phoneNumber">Phone Number:</label>
-        <input id="phoneNumber" placeholder="Optional" name="phoneNumber"></input>
-        <br><br>
-        <button type="submit" id="submit">Submit</button>
-    </form>
+
+<body class="d-flex">
+    <main>
+        <h1>Create a NoChat Account</h1>
+        <form action="" id="account-form" class="d-flex">
+            <label for="name">
+                <h3>Email:</h3>
+                <input type="text" id="email" placeholder="Use a valid email" name="email" required>
+            </label>
+
+            <label for="username">
+                <h3>Username:</h3>
+                <input id="username" placeholder="Select a unique username" name="username" required>
+            </label>
+
+            <label for="password">
+                <h3>Password:</h3>
+                <input id="password" name="password" autocapitalize="off" required>
+            </label>
+
+            <label for="phoneNumber">
+                <h3>Phone Number:</h3>
+                <input id="phoneNumber" placeholder="Optional" name="phoneNumber">
+            </label>
+
+            <div class="buttons d-flex"><button type="submit" id="submit">Submit</button></div>
+        </form>
+    </main>
     <script>
         const create = document.querySelector('#account-form');
         create.addEventListener('submit', async (e) => {
@@ -52,7 +63,7 @@
                 alert(`${JSON.stringify(data)}`);
                 // If created successfully, redirect to the login page
                 if (response.status == 200) {
-                    setTimeout(async() => {
+                    setTimeout(async () => {
                         window.location.href = '/public/login-page';
                     }, 1000 * 1); // Return to the login page after 2 seconds
                 }
@@ -60,6 +71,7 @@
                 console.log('An error occured:', err.message);
             }
         });
-        </script>
+    </script>
 </body>
+
 </html>
