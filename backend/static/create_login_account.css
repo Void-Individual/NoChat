@@ -8,7 +8,7 @@
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf") format(truetype);
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf");
 }
 @font-face {
   font-family: "Oufit";
