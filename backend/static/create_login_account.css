@@ -1,0 +1,109 @@
+:root {
+  --Purple100: hsl(254, 88%, 90%);
+  --Purple500: hsl(256, 67%, 59%);
+  --Yellow100: hsl(31, 66%, 93%);
+  --Yellow500: hsl(39, 100%, 71%);
+  --White: hsl(0, 0%, 100%);
+  --Black: hsl(0, 0%, 7%);
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf") format(truetype);
+}
+@font-face {
+  font-family: "Oufit";
+  src: url("../assets/fonts/Outfit/Outfit-VariableFont_wght.ttf")
+    format(truetype);
+}
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  justify-content: center;
+  background: linear-gradient(var(--Purple500), var(--Purple100));
+  font-size: 1.125rem;
+  padding: 1rem 5%;
+}
+main {
+  width: clamp(30rem, calc(100% - 40px), 35rem);
+  text-align: center;
+}
+h1 {
+  font-family: "Oufit";
+  color: var(--White);
+  margin: 0 0 2rem 0;
+}
+form {
+  width: 100%;
+  background-color: var(--Purple500);
+  box-shadow: 0.35rem 0.35rem var(--Black);
+  padding: 2rem;
+  border-radius: 1rem;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: 0.5s;
+}
+input,
+button {
+  padding: 0.85rem 1.125rem;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  border-radius: 99rem;
+  background-color: var(--Purple100);
+  color: var(--Purple500);
+  box-shadow: 0.25rem 0.25rem var(--Black);
+}
+input::placeholder {
+  color: var(--Purple500);
+}
+input:hover {
+  box-shadow: 0.25rem 0.45rem var(--Black);
+  transition: 0.5s;
+  transform: translateY(-0.5rem);
+}
+label,
+input {
+  width: 100%;
+  transition: 0.5s;
+}
+.buttons {
+  width: 100%;
+  justify-content: space-between;
+  margin: 2rem 0 0 0;
+}
+button {
+  border-radius: 1rem;
+  width: fit-content;
+  color: var(--Black);
+  transition: 0.5s;
+  cursor: pointer;
+}
+button:hover {
+  box-shadow: 0.25rem 0.45rem var(--Black);
+  transition: 0.5s;
+  transform: translateY(-0.5rem);
+}
+h3 {
+  color: var(--White);
+  text-align: start;
+  margin: 0 0 0.5rem 0;
+}
+.d-flex {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+@media (max-width: 36rem) {
+  main {
+    width: 100%;
+  }
+}

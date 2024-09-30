@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Page</title>
-    <link rel="stylesheet" href="/static/chat-page.css">
-    <script src="/socket.io/socket.io.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Page</title>
+  <link rel="stylesheet" href="/static/chat-page.css">
+  <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body>
   <h1>You (<%= user1 %>) are now chatting with <%= user2 %>!</h1>
 
   <!-- Add data attributes to store user values -->
   <div id="userData" data-user1="<%= user1 %>" data-user2="<%= user2 %>" channel="<%= channel %>"></div>
   <ul id="chatList">
-    <% if (chat && chat.length > 0) { %>
-      <% chat.forEach(line => { %>
-        <% if (line.split(':')[0] === user1) { %>
-          <li class="user">You: <%= (line.split(':')[1]) %> </li>
-        <% } else { %>
-          <li class="other"><%= line %> </li>
-        <% } %>
-      <% }) %>
-    <% } else { %>
-      <p>No one has started a conversation yet</p>
-    <% } %>
+    <% if (chat && chat.length> 0) { %>
+      <% chat.forEach(line=> { %>
+        <% if (line.split(':')[0]===user1) { %>
+          <li class="user">You: <%= (line.split(':')[1]) %>
+          </li>
+          <% } else { %>
+            <li class="other">
+              <%= line %>
+            </li>
+            <% } %>
+              <% }) %>
+                <% } else { %>
+                  <p>No one has started a conversation yet</p>
+                  <% } %>
   </ul>
 
   <div class="chatContainer">
@@ -112,10 +117,11 @@
     });
 
     // Scroll the entire page's content to the bottom immediately
-    window.onload = function() {
+    window.onload = function () {
       const chatList = document.getElementById('chatList');
       chatList.scrollTop = chatList.scrollHeight;
     };
   </script>
 </body>
+
 </html>
