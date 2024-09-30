@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="/static/login-page.css">
+    <link rel="stylesheet" href="../static/create_login_account.css">
 </head>
-<body>
-    <h1>Welcome to NoChat </h1>
-    <p>Log in to your account</p>
-    <form action="/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required>
-        <br><br>
-        <label for="password">Password:</label>
-        <input id="password" placeholder="" name="password" autocapitalize="off" required></input>
-        <br><br>
-        <div class="buttons">
-            <button type="submit">Login</button>
-            <button type="button" id='create'>I dont have an account</button>
-        </div>
-    </form>
+
+<body class="d-flex">
+    <main>
+        <h1>Welcome to NoChat </h1>
+        <form action="/login" method="POST" class="d-flex">
+            <label for="email">
+                <input type="text" id="email" name="email" placeholder="email" required>
+            </label>
+
+            <label for="password">
+                <input id="password" name="password" autocapitalize="off" placeholder="Password" required>
+            </label>
+
+            <div class="buttons d-flex">
+                <button type="submit">Login</button>
+                <button type="button" id='create'>Create an account</button>
+            </div>
+        </form>
+    </main>
 </body>
 <script>
     // If the create-account button is created, redirect the page
@@ -30,4 +35,5 @@
         window.location.href = 'create-account';
     })
 </script>
+
 </html>
