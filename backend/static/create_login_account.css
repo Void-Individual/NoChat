@@ -8,12 +8,12 @@
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf");
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Oufit";
+  font-family: "Outfit";
   src: url("../assets/fonts/Outfit/Outfit-VariableFont_wght.ttf")
-    format(truetype);
+    format("truetype");
 }
 *,
 *::before,
@@ -37,7 +37,7 @@ main {
   text-align: center;
 }
 h1 {
-  font-family: "Oufit";
+  font-family: "Outfit";
   color: var(--White);
   margin: 0 0 2rem 0;
 }
