@@ -7,7 +7,7 @@
     <title>User Profile</title>
     <link rel="stylesheet" href="../static/profile-page.css">
 </head>
-
+<!--Will only be passing the main user object to this-->
 <body>
     <header>
         <h1>Welcome, <%= user.username %>!</h1>
@@ -20,6 +20,8 @@
         <button type="submit">Search</button>
     </form>
     <div id="search-results">
+        <!--Please note that good indentation is neccesary to stop EJS code from
+        looking too pushed forward, and help the readability of the data structure-->
         <% if (results) { %>
             <ul>
                 <% results.forEach(result=> { %>
@@ -27,36 +29,42 @@
                         <li>
                             <%= result.username %>
                         </li>
-                        <% } else { %>
-                            <li>
-                                <a href="/user/<%= result.username %>">
-                                    <%= result.username %>
-                                </a>
-                            </li>
-                            <% } %>
-                                <% }) %>
+                    <% } else { %>
+                        <li>
+                            <a href="/user/<%= result.username %>">
+                                <%= result.username %>
+                            </a>
+                        </li>
+                    <% } %>
+                <% }) %>
             </ul>
-            <% } %>
+        <% } %>
+        <!--The curly braces have to end in exactly the right place,
+            otherwise, i didn't change much-->
     </div>
 
     <button type="button" id="logout">Logout</button>
+    <!--Why'd we remove the chat option? I'm guessing you encountered a problem?-->
     <!--<button type="button" id="chat">Chat</button>-->
 
     <script>
+        // This is a script to handle the redirection endpoint if logout is clicked
         const create = document.querySelector('#logout');
         create.addEventListener('click', async (e) => {
-            console.log('Running logout')
-            const response = await fetch('/disconnect', {
+            console.log('Running logout') // This is merely for frontend examination
+            const response = await fetch('/disconnect', { // Fetch the endpoint
                 method: 'GET',
                 credentials: 'include' // Include cookies with the request
             });
-            console.log(response);
+
+            // After the endpoint has been run, set a timer and then logout
             setTimeout(() => {
                 if (response.ok) {
-                    alert('Logging out...');
-                    window.location.href = '/public/login-page.html'; // Optionally redirect after logout
+                    alert('Logging out...'); // Can we make the webpage show the alert for a moment
+                    // before autoredirecting, instead of waiting for a click OK confirmation everytime?
+                    window.location.href = '/public/login-page.html'; // Redirect after logout and OK
                 }
-            }, 1000 * 1); // Log out after 2 seconds
+            }, 1000 * 1); // Log out after 1 seconds
         });
     </script>
 </body>
