@@ -81,10 +81,11 @@
 
 
     // If the create-account button is created, redirect the page
+    // If the create-account button is clicked, redirect to that page
     const create = document.querySelector('#create');
     create.addEventListener('click', e => {
-        //e.stopPropagation();
-        window.location.href = '/create-account';
+        // window.location.href = '/backend/views/create-account.html';
+        window.location.href = 'create-account';
     })
 </script>
 
