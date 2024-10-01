@@ -8,12 +8,12 @@
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf");
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Oufit";
+  font-family: "Outfit";
   src: url("../assets/fonts/Outfit/Outfit-VariableFont_wght.ttf")
-    format(truetype);
+    format("truetype");
 }
 *,
 *::before,
@@ -37,7 +37,7 @@ main {
   text-align: center;
 }
 h1 {
-  font-family: "Oufit";
+  font-family: "Outfit";
   color: var(--White);
   margin: 0 0 2rem 0;
 }
@@ -70,10 +70,31 @@ input:hover {
   transition: 0.5s;
   transform: translateY(-0.5rem);
 }
+input:hover + .show_or_hide_password {
+  transform: translateY(-0.5rem);
+  transition: 0.5s;
+  --Purple500: hsl(256, 100%, 61%);
+}
 label,
 input {
   width: 100%;
   transition: 0.5s;
+}
+.password {
+  position: relative;
+}
+.show_or_hide_password {
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  transition: 0.5s;
+  right: 5%;
+}
+svg {
+  cursor: pointer;
+}
+.show_or_hide_password input {
+  display: none;
 }
 .buttons {
   width: 100%;
@@ -83,7 +104,7 @@ input {
 button {
   border-radius: 1rem;
   width: fit-content;
-  color: var(--Black);
+  color: var(--Purple500);
   transition: 0.5s;
   cursor: pointer;
 }

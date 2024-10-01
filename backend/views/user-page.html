@@ -1,18 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Another User Profile</title>
-    <link rel="stylesheet" href="/static/user-page.css">
+    <link rel="stylesheet" href="../static/user-page.css">
 </head>
-<body>
-    <!--Only this users object will be passed here.
-        Retrieve whatever data you may need from it-->
-    <h1>This is <%= user.username %>!</h1>
-    <p>You have successfully viewed their profile</p>
-    <p>Their email: ***** </p>
 
-    <a href="/chat/<%= user.username %>" class="button-link">Chat</a>
+<body class="d-flex">
+    <main class="d-flex">
+        <header>
+            <h1>This is <%= user.username %>!</h1>
+            <p>You have successfully viewed their profile</p>
+            <p> Their email:
+                <em>***** </em>
+            </p>
+        </header>
+        <a href="/chat/<%= user.username %>" class="button-link">
+            <button>Chat</button>
+        </a>
+    </main>
+
+    <script>
+        function rain() {
+            const amount = 200;
+            const body = document.querySelector('body');
+            let index = 0;
+            while (index < amount) {
+                const drop = document.createElement('i')
+                let size = Math.random() * 5;
+                let posX = Math.floor(Math.random() * window.innerWidth)
+                let delay = Math.random() * -10
+                let duration = Math.random() * 5
+
+                drop.style.width = `${0.2 + size}px`
+                drop.style.left = `${posX}px`
+                drop.style.animationDelay = `${delay}s`
+                drop.style.animationDuration = `${1 + duration}s`
+                body.appendChild(drop)
+                index++
+
+            }
+        }
+        rain()
+
+    </script>
+
+    <!--<script>
+        const create = document.querySelector('#chat');
+        create.addEventListener('click', async (e) => {
+            console.log('Running logout')
+            const response = await fetch('/disconnect', {
+                method: 'GET',
+                credentials: 'include' // Include cookies with the request
+            });
+            console.log(response);
+            setInterval(async () => {
+                if (response.ok) {
+                    alert('Logging out...');
+                    window.location.href = '/login-page.html'; // Optionally redirect after logout
+                }
+            }, 1000 * 1); // Log out after 2 seconds
+        });
+    </script>-->
 </body>
+
 </html>
