@@ -19,17 +19,19 @@
 
             <label for="username">
                 <h3>Username:</h3>
-                <input id="username" placeholder="Select a unique username" name="username" required>
+                <!-- Added the type attribute of text to the input so as to further help the browser autofill works properly -->
+                <input type="text" id="username" placeholder="Select a unique username" name="username" required>
             </label>
 
             <label for="password">
                 <h3>Password:</h3>
-                <input id="password" name="password" autocapitalize="off" required>
+                <!-- Added the type attribute of password to the input so that the browser crawl the page well -->
+                <input type="password" id="password" name="password" autocapitalize="off" required>
             </label>
 
             <label for="phoneNumber">
                 <h3>Phone Number:</h3>
-                <input id="phoneNumber" placeholder="Optional" name="phoneNumber">
+                <input type="tel" id="phoneNumber" placeholder="Optional" name="phoneNumber">
             </label>
 
             <div class="buttons d-flex"><button type="submit" id="submit">Submit</button></div>
