@@ -7,29 +7,12 @@
     <link rel="stylesheet" href="/static/user-page.css">
 </head>
 <body>
+    <!--Only this users object will be passed here.
+        Retrieve whatever data you may need from it-->
     <h1>This is <%= user.username %>!</h1>
     <p>You have successfully viewed their profile</p>
     <p>Their email: ***** </p>
 
     <a href="/chat/<%= user.username %>" class="button-link">Chat</a>
-
-
-    <!--<script>
-        const create = document.querySelector('#chat');
-        create.addEventListener('click', async (e) => {
-            console.log('Running logout')
-            const response = await fetch('/disconnect', {
-                method: 'GET',
-                credentials: 'include' // Include cookies with the request
-            });
-            console.log(response);
-            setInterval(async () => {
-                if (response.ok) {
-                    alert('Logging out...');
-                    window.location.href = '/login-page.html'; // Optionally redirect after logout
-                }
-            }, 1000 * 1); // Log out after 2 seconds
-        });
-    </script>-->
 </body>
 </html>
