@@ -3,6 +3,7 @@ import dbClient from '../utils/db';
 import { v4 as uuidV4 } from 'uuid';
 
 const { ObjectId } = require('mongodb');
+const axios = require('axios');
 
 const waitConnection = (client) => new Promise((resolve, reject) => {
   let i = 0;
@@ -83,17 +84,12 @@ class AppController {
       return;
     }
     const { user } = req.params;
-    const otherUser = await findOneUser(dbClient, { username: user });
-    if (!otherUser) {
-      res.status(401).send({ error: 'The other party does not have an account' });
-      return;
-    }
 
-    const channel = await checkChannels(mainUser, otherUser);
+    const channel = await checkChannels(mainUser.username, user);
     console.log('checked channels')
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
 
-    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user1=${encodeURIComponent(mainUser.username)}&user2=${encodeURIComponent(user)}`);
+    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user)}`);
   }
 
   static async sendChat(req, res) {
@@ -121,14 +117,23 @@ class AppController {
       return res.status(500).json({ error: 'Socket.io not initialized' });
     }
     sendMessage(channel, message, mainUser.username);
-    res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user1=${encodeURIComponent(mainUser.username)}&user2=${encodeURIComponent(user)}`);
+
+    // Make an internal request to save the chat instead of redirecting
+    try {
+      const response = await axios.post(`${req.protocol}://${req.get('host')}/saveChatChannelFile`, {
+        channel,
+        message,
+        user2: user
+      });
+      //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
+    } catch (err) {
+      console.log('An error occured: ', err.message);
+    }
+    res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user2=${encodeURIComponent(user)}`);
   }
 }
 
-async function checkChannels(mainUser, otherUser) {
-  const user1 = mainUser.username;
-  const user2 = otherUser.username;
-
+async function checkChannels(user1, user2) {
   // Ensure both users exist in the channels dictionary
   const subscribedChannels = await dbClient.subscribedChannels();
   if (!subscribedChannels[user1]) {
@@ -145,7 +150,7 @@ async function checkChannels(mainUser, otherUser) {
     startChatChannel(newChannel);
     await dbClient.updateChannels(subscribedChannels);
     // Add the new user to the list of contacts for both user after a channel has been created
-    
+
 
     console.log('Started a new channel for:', user1, user2);
   }

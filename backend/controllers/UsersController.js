@@ -142,6 +142,24 @@ class UsersController {
           sameSite: 'Strict' // Prevents cross-site request forgery (CSRF) attacks
         });
 
+        // Set an online status
+        try {
+          const result = await dbClient.db.collection('users').updateOne(
+            { email },  // The filter to find the user document by ID
+            { $set: { status: "Online" } }  // Update operation to set the status to "Offline"
+          );
+
+          // Check if exactly one document was modified
+          if (result.modifiedCount === 1) {
+            console.log(`${user.username} is now ONLINE`);
+          } else {
+            console.log(`No update occurred for ${user.username}.`);
+            // This log could indicate that the user was already offline or the user was not found.
+          }
+        } catch (error) {
+          console.error(`An error occurred while trying to set ${user.username} online:`, error);
+        }
+
         // Send the success page
         res.redirect('/user/me');
       } else {
@@ -199,7 +217,8 @@ class UserController {
       // Access token from cookies
       const token = req.cookies.authToken;
       if (!token) {
-        res.status(401).send({ error: 'Unauthorized, token missing' });
+        res.redirect('error-page', { error: 'Unauthorized, token missing' });
+        // res.status(401).send({ error: 'Unauthorized, token missing' });
         return;
       }
 

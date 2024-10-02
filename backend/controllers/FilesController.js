@@ -134,15 +134,15 @@ class FilesController {
         return;
       }
 
-      const { channel, message, user1, user2 } = req.query;
+      const { channel, message, user2 } = req.query;
 
-      console.log(`Channel: ${channel}, for ${user1} and ${user2}, message: ${message}`);
+      console.log(`Channel: ${channel}, for ${mainUser.username} and ${user2}, message: ${message}`);
       // Find or create the channel document
       let channelFile = await findOneFile(dbClient, { name: channel });
       if (!channelFile) {
         const channelData = {
           name: channel,
-          users: [user1, user2],
+          users: [mainUser.username, user2],
           data: [] // Initialize data as an array to store messages
         }
         const result = await dbClient.db.collection('files').insertOne(channelData)
@@ -162,7 +162,7 @@ class FilesController {
       { name: channel },
       { $set: { data: updatedData } }
     );
-    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user1=${encodeURIComponent(user1)}&user2=${encodeURIComponent(user2)}`)
+    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
       console.log('An error occured:', err.message);
       res.status(500).send({ error: 'An error occurred while saving the message' });
@@ -184,9 +184,14 @@ class FilesController {
         return;
       }
 
-      const { channel, user1, user2 } = req.query;
+      const { channel, user2 } = req.query;
+      const otherUser = await findOneUser(dbClient, { username: user2 });
+      if (!otherUser) {
+        res.status(401).send({ error: 'The other party does not have an account' });
+        return;
+      }
 
-      console.log(`Channel: ${channel}, for ${user1} and ${user2}`);
+      console.log(`Channel: ${channel}, for ${mainUser.username} and ${user2}`);
       // Find or create the channel document
       let channelFile = await findOneFile(dbClient, { name: channel });
       if (!channelFile) {
@@ -197,7 +202,7 @@ class FilesController {
       // Retrieve messages from the channel document
       const messages = channelFile.data || [];
 
-      res.render('chat-page', { user1, user2, channel, chat: messages });
+      res.render('chat-page', { user1: mainUser, user2: otherUser, channel, chat: messages });
     } catch (err) {
       console.log('An error occured:', err.message);
       res.status(500).send({ error: 'An error occurred while getting the messages' });

@@ -14,7 +14,7 @@
   user and the channel that will be used for communicating
   on the web socket, and the content of the saved chat data-->
   <h1>You (<%= user1.username %>) are now chatting with <%= user2.username %>!</h1>
-
+  <p>Status: <%= user2.status %></p>
   <!-- Add data attributes to store user values to be used in later scripts-->
   <div id="userData" data-user1="<%= user1.username %>" data-user2="<%= user2.username %>" channel="<%= channel %>"></div>
   <ul id="chatList">

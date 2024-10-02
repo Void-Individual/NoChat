@@ -71,6 +71,25 @@ class AuthController {
       const user = await findOneUser(dbClient, { _id });
       if (user) {
         await redisClient.del(`auth_${token}`);
+
+        // Set the status to offline
+        try {
+          const result = await dbClient.db.collection('users').updateOne(
+            { _id: ObjectId(_id) },  // The filter to find the user document by ID
+            { $set: { status: "Offline" } }  // Update operation to set the status to "Offline"
+          );
+
+          // Check if exactly one document was modified
+          if (result.modifiedCount === 1) {
+            console.log(`${user.username} is now OFFLINE`);
+          } else {
+            console.log(`No update occurred for ${user.username}.`);
+            // This log could indicate that the user was already offline or the user was not found.
+          }
+        } catch (error) {
+          console.error(`An error occurred while trying to set ${user.username} offline:`, error);
+        }
+
         res.status(204).send();
       } else {
         res.status(401).send({ error: 'Unauthorized' });
