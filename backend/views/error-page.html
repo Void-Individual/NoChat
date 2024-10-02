@@ -11,7 +11,7 @@
 <body class="d-flex">
     <main>
         <h1>Oops, <%= error %>!</h1>
-        <p>You may need to login again</p>
+        <p>You could go back to try again, but there's a chance that you may need to login again</p>
         <div class="buttons"><button type="button" id="login">Login page</button></div>
     </main>
 
@@ -24,11 +24,10 @@
                 credentials: 'include' // Include cookies with the request
             });
             console.log(response);
-            setInterval(async () => {
-                if (response.ok) {
-                    window.location.href = '/public/login-page.html'; // Optionally redirect after logout
-                }
-            }, 1000 * 1); // Log out after 2 seconds
+            if (response.ok) {
+                console.log('Logged user out first')
+            }
+            window.location.href = '/public/login-page.html'; // Optionally redirect after logout
         });
     </script>
 </body>

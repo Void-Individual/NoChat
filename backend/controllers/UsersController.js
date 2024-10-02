@@ -67,31 +67,38 @@ class UsersController {
 
       const missingFields = ['email','password','username'].filter(f => !req.body[f]);
       if (missingFields.length) {
-        res.status(400).send({ error: `Missing ${missingFields[0]}` });
+        //res.status(400).send({ error: `Missing ${missingFields[0]}` });
+        res.render('error-page', { error: `Missing ${missingFields[0]}` });
+
         return;
       }
 
       // Check if the email has been used
       const checkEmail = await findOneUser(dbClient, { email });
       if (checkEmail) {
-        res.status(400).send({
-          error: ' This Email already has an account',
-         });
+        res.render('error-page', { error: 'This Email already has an account' });
+        //res.status(400).send({error: 'This Email already has an account' });
         return;
       } if (checkEmail === false) {
-        res.status(400).send({ error: 'An error occured' });
+        res.render('error-page', { error: 'An error occured while setting up your account' });
+        //res.render('error-page', { error: 'An error occured' });
+        //res.status(400).send({ error: 'An error occured' });
         return;
       }
 
       // Check if the email has been used
       const checkUser = await findOneUser(dbClient, { username });
       if (checkUser) {
-        res.status(400).send({
-          error: 'This username has been taken',
-       });
+        res.render('error-page', { error: 'This username has been taken' });
+
+      //  res.status(400).send({
+      //    error: 'This username has been taken',
+      // });
         return;
       } if (checkUser === false) {
-        res.status(400).send({ error: 'An error occured' });
+        //res.status(400).send({ error: 'An error occured' });
+        res.render('error-page', { error: 'An error occured while setting up your account' });
+        //res.render('error-page', { error: 'An error occured' });
         return;
       }
 
@@ -112,7 +119,9 @@ class UsersController {
       res.json({data: 'Your account has been created successfully'});
     } catch (err) {
       console.log('Error occured while creating user:', err.message);
-      res.status(500).send({ error: 'An error occured'});
+      //res.status(500).send({ error: 'An error occured'});
+      res.render('error-page', { error: 'An error occured while setting up your account' });
+
     }
   }
 
@@ -123,7 +132,9 @@ class UsersController {
       const user = await findOneUser(dbClient, { email });
       if (user) {
         if (hashSHA1(password) !== user.password) {
-          res.status(401).send({ error: 'Invalid password'});
+          //res.status(401).send({ error: 'Invalid password'});
+          res.render('error-page', { error: 'Invalid passord' });
+
           return;
         }
 
@@ -163,12 +174,15 @@ class UsersController {
         // Send the success page
         res.redirect('/user/me');
       } else {
-        res.status(401).send({ error: 'Email does not exist' });
+        //res.status(401).send({ error: 'Email does not exist' });
+        res.render('error-page', { error: 'Email does not exist' });
         return;
       }
     } catch (err) {
     console.log('An error occured in /login:', err);
-    res.status(400).send({ error: 'Error during login' });
+    //res.status(400).send({ error: 'Error during login' });
+    res.render('error-page', { error: 'An error occured while logging in' });
+
    }
   }
 
@@ -177,13 +191,16 @@ class UsersController {
     console.log('Running search');
     const token = req.cookies.authToken;
     if (!token) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      res.render('error-page', { error: 'Unauthorized, token missing' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
     const _id = await redisClient.get(`auth_${token}`);
     const user = await findOneUser(dbClient, { _id });
     if (!user) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      res.render('error-page', { error: 'Your own user info cant be found' });
+
       return;
     }
     const { search } = req.query;
@@ -217,7 +234,7 @@ class UserController {
       // Access token from cookies
       const token = req.cookies.authToken;
       if (!token) {
-        res.redirect('error-page', { error: 'Unauthorized, token missing' });
+        res.render('error-page', { error: 'Unauthorized, token missing' });
         // res.status(401).send({ error: 'Unauthorized, token missing' });
         return;
       }
@@ -230,12 +247,15 @@ class UserController {
         //const { email } = user;
         //res.status(200).send(`User authenticated: ${{ id: _id, email }}`);
       } else {
-        res.status(401).send({ error: 'Unauthorized, you need to log in' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+
+        //res.render('error-page', { error: 'No user was found with your details' });
+        //res.status(401).send({ error: 'Unauthorized, you need to log in' });
         return;
       }
     } catch (err) {
       console.log('An error occured:', err.message);
-      res.status(400).send({ error: 'Error during disconnection' });
+      res.render('error-page', { error: 'An error occured while fetching your profile' });
     }
   }
 
@@ -245,14 +265,18 @@ class UserController {
       // Access token from cookies
       const token = req.cookies.authToken;
       if (!token) {
-        res.status(401).send({ error: 'Unauthorized, token missing' });
+        res.render('error-page', { error: 'Unauthorized, token missing' });
+        //res.status(401).send({ error: 'Unauthorized, token missing' });
         return;
       }
 
       const _id = await redisClient.get(`auth_${token}`);
       const user = await findOneUser(dbClient, { _id });
       if (!user) {
-        res.status(401).send({ error: 'Unauthorized, you need to login' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+
+        //res.render('error-page', { error: 'No user was found with those details' });
+        //res.status(401).send({ error: 'Unauthorized, you need to login' });
         //res.redirect('/login-page.html');
         return;
       }
@@ -269,7 +293,9 @@ class UserController {
       }
     } catch (err) {
       console.log('An error occured:', err.message);
-      res.status(400).send({ error: 'Error while getting user' });
+      res.render('error-page', { error: 'An error occured while getting that user' });
+
+      //res.status(400).send({ error: 'Error while getting user' });
     }
   }
 }
