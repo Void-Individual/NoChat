@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Page</title>
-  <link rel="stylesheet" href="/static/chat-page.css">
+  <link rel="stylesheet" href="../static/chat-page.css">
   <script src="/socket.io/socket.io.js"></script>
 </head>
 
@@ -16,7 +16,8 @@
   <h1>You (<%= user1.username %>) are now chatting with <%= user2.username %>!</h1>
   <p>Status: <%= user2.status %></p>
   <!-- Add data attributes to store user values to be used in later scripts-->
-  <div id="userData" data-user1="<%= user1.username %>" data-user2="<%= user2.username %>" channel="<%= channel %>"></div>
+  <div id="userData" data-user1="<%= user1.username %>" data-user2="<%= user2.username %>" channel="<%= channel %>">
+  </div>
   <ul id="chatList">
     <!--If there is a valid chat history-->
     <% if (chat && chat.length> 0) { %>
@@ -24,23 +25,26 @@
         <!--If the line of conversation belongs to this page user-->
         <% if (line.split(':')[0]===user1.username) { %>
           <!--Replace and customize the outpu with "You"-->
-          <li class="user">You: <%= (line.split(':')[1]) %></li>
-        <% } else { %>
-          <!--Display the line the way it mustve been saved if it belongs to the second user-->
-          <li class="other"><%= line %></li>
-        <% } %>
-      <% }) %>
-    <% } else { %>
-      <!--If no conversation exists, display this instead-->
-      <p>No one has started a conversation yet</p>
-    <% } %>
+          <li class="user">You: <%= (line.split(':')[1]) %>
+          </li>
+          <% } else { %>
+            <!--Display the line the way it mustve been saved if it belongs to the second user-->
+            <li class="other">
+              <%= line %>
+            </li>
+            <% } %>
+              <% }) %>
+                <% } else { %>
+                  <!--If no conversation exists, display this instead-->
+                  <p>No one has started a conversation yet</p>
+                  <% } %>
   </ul>
 
   <div class="chatContainer">
     <input id="message" placeholder="Type a message..." name="message"></input>
     <button id="sendButton">Send</button>
   </div>
-  <!--<a href="/chat/<%= user1 %>" class="button-link">Chat</a>-->
+  <a href="/chat/<%= user1 %>" class="button-link">Chat</a>
 
 
   <script>
