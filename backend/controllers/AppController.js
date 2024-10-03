@@ -74,13 +74,16 @@ class AppController {
     console.log('Running startChat');
     const token = req.cookies.authToken;
     if (!token) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      //res.render('error-page', { error: 'This Email already has an account' });
+      res.render('error-page', { error: 'Unauthorized, token missing' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
     const _id = await redisClient.get(`auth_${token}`);
     const mainUser = await findOneUser(dbClient, { _id });
     if (!mainUser) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      res.render('error-page', { error: 'Your own user info cant be found' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
     const { user } = req.params;
@@ -98,13 +101,15 @@ class AppController {
     console.log('Running SendChat');
     const token = req.cookies.authToken;
     if (!token) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      res.render('error-page', { error: 'Unauthorized, token missing' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
     const _id = await redisClient.get(`auth_${token}`);
     const mainUser = await findOneUser(dbClient, { _id });
     if (!mainUser) {
-      res.status(401).send({ error: 'Unauthorized, You need to login again' });
+      res.render('error-page', { error: 'Your own user info cant be found' });
+      //res.status(401).send({ error: 'Unauthorized, You need to login again' });
       return;
     }
     const { user } = req.params;
@@ -114,7 +119,8 @@ class AppController {
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
     // Ensure that _server.io is defined
     if (!io) {
-      return res.status(500).json({ error: 'Socket.io not initialized' });
+      res.render('error-page', { error: 'Socket.io not initialized' });
+      //return res.status(500).json({ error: 'Socket.io not initialized' });
     }
     sendMessage(channel, message, mainUser.username);
 
