@@ -156,8 +156,6 @@ async function checkChannels(user1, user2) {
     startChatChannel(newChannel);
     await dbClient.updateChannels(subscribedChannels);
     // Add the new user to the list of contacts for both user after a channel has been created
-
-
     console.log('Started a new channel for:', user1, user2);
   }
   return subscribedChannels[user1][user2];
