@@ -124,13 +124,15 @@ class FilesController {
     try {
       const token = req.cookies.authToken;
       if (!token) {
-        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        res.render('error-page', { error: 'Unauthorized, token missing' });
+        //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
       }
       const _id = await redisClient.get(`auth_${token}`);
       const mainUser = await findOneUser(dbClient, { _id });
       if (!mainUser) {
-        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+        //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
       }
 
@@ -165,7 +167,8 @@ class FilesController {
     res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
       console.log('An error occured:', err.message);
-      res.status(500).send({ error: 'An error occurred while saving the message' });
+      res.render('error-page', { error: 'An error occurred while saving your messages' });
+      //res.status(500).send({ error: 'An error occurred while saving the message' });
     }
   }
 
@@ -174,20 +177,23 @@ class FilesController {
     try {
       const token = req.cookies.authToken;
       if (!token) {
-        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        res.render('error-page', { error: 'Unauthorized, token missing' });
+        //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
       }
       const _id = await redisClient.get(`auth_${token}`);
       const mainUser = await findOneUser(dbClient, { _id });
       if (!mainUser) {
-        res.status(401).send({ error: 'Unauthorized, You need to login again' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+        //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
       }
 
       const { channel, user2 } = req.query;
       const otherUser = await findOneUser(dbClient, { username: user2 });
       if (!otherUser) {
-        res.status(401).send({ error: 'The other party does not have an account' });
+        res.render('error-page', { error: 'The other party does not have an account' });
+        //res.status(401).send({ error: 'The other party does not have an account' });
         return;
       }
 
@@ -205,7 +211,8 @@ class FilesController {
       res.render('chat-page', { user1: mainUser, user2: otherUser, channel, chat: messages });
     } catch (err) {
       console.log('An error occured:', err.message);
-      res.status(500).send({ error: 'An error occurred while getting the messages' });
+      res.render('error-page', { error: 'An error occurred while getting your messages' });
+      //res.status(500).send({ error: 'An error occurred while getting the messages' });
     }
   }
 

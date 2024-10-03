@@ -49,7 +49,8 @@ class AuthController {
 
       const user = await findOneUser(dbClient, { email, password });
       if (!user) {
-        res.status(401).send({ error: 'Unauthorized' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+        //res.status(401).send({ error: 'Unauthorized' });
         return;
       }
 
@@ -60,7 +61,8 @@ class AuthController {
       res.status(200).send({ token });
     } catch (err) {
       console.log('There was an error:', err.message);
-      res.status(400).send({ error: 'Error during connection' });
+      res.render('error-page', { error: 'An error occured during connection' });
+      //res.status(400).send({ error: 'Error during connection' });
     }
   }
 
@@ -92,11 +94,13 @@ class AuthController {
 
         res.status(204).send();
       } else {
-        res.status(401).send({ error: 'Unauthorized' });
+        res.render('error-page', { error: 'Your own user info cant be found' });
+        //res.status(401).send({ error: 'Unauthorized' });
       }
     } catch (err) {
       console.log('An error occured:', err.message);
-      res.status(500).send({ error: 'Error during disconnection' });
+      res.render('error-page', { error: 'An error occured during disconnection' });
+      //res.status(500).send({ error: 'Error during disconnection' });
     }
   }
 }
@@ -114,8 +118,10 @@ const checkAuth = async (req, res, next) => {
     }
     // Token is not valid or not present
     res.status(401).send('Not Authenticated');
+    //res.render('error-page', { error: 'Not Authenticated' });
   } catch (err) {
     console.error('Error in /check-auth:', err.message);
+    //res.render('error-page', { error: 'Server Error' });
     res.status(500).send('Server Error');
   }
 };
