@@ -107,7 +107,8 @@ class UsersController {
         email,
         password,
         username,
-        phoneNumber: phoneNumber || null
+        phoneNumber: phoneNumber || null,
+        status: 'Offline'
       };
       const newUser = await dbClient.db.collection('users').insertOne(data);
 

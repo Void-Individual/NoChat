@@ -68,7 +68,7 @@
       if (sender === user1) {
         // If the sender is this main user, trigger the user class
         newMessage.className = 'user';
-        newMessage.textContent = `${message}`;
+        newMessage.textContent = `You: ${message.split(':')[1]}`;
       } else {
         // Trigger the alternate other class
         newMessage.className = 'other';
