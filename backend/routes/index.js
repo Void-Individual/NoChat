@@ -28,7 +28,7 @@ router.get('/user/:username', UserController.getUser);
 router.get('/chat/:user', AppController.startChat);
 router.post('/chat-send/:user', AppController.sendChat)
 router.get('/getChatChannelFile', FilesController.getChatFile)
-router.get('/saveChatChannelFile', FilesController.saveChatFile)
+router.post('/saveChatChannelFile', FilesController.saveChatFile)
 
 router.get('/disconnect', AuthController.getDisconnect);
 

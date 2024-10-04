@@ -122,8 +122,10 @@ class FilesController {
   static async saveChatFile(req, res) {
     console.log('Running saveChatFile');
     try {
+      //console.log(req.cookies)
       const token = req.cookies.authToken;
       if (!token) {
+        console.log('No token')
         res.render('error-page', { error: 'Unauthorized, token missing' });
         //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
@@ -131,12 +133,13 @@ class FilesController {
       const _id = await redisClient.get(`auth_${token}`);
       const mainUser = await findOneUser(dbClient, { _id });
       if (!mainUser) {
+        console.log('No user')
         res.render('error-page', { error: 'Your own user info cant be found' });
         //res.status(401).send({ error: 'Unauthorized, You need to login again' });
         return;
       }
 
-      const { channel, message, user2 } = req.query;
+      const { channel, message, user2 } = req.body;
 
       console.log(`Channel: ${channel}, for ${mainUser.username} and ${user2}, message: ${message}`);
       // Find or create the channel document
@@ -164,7 +167,9 @@ class FilesController {
       { name: channel },
       { $set: { data: updatedData } }
     );
-    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
+    //console.log('ENd of save')
+    res.status(200).send({ data: 'Success'});
+    //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
       console.log('An error occured:', err.message);
       res.render('error-page', { error: 'An error occurred while saving your messages' });

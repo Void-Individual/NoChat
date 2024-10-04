@@ -126,16 +126,27 @@ class AppController {
 
     // Make an internal request to save the chat instead of redirecting
     try {
+      console.log('--------------------------------------------')
       const response = await axios.post(`${req.protocol}://${req.get('host')}/saveChatChannelFile`, {
         channel,
         message,
         user2: user
+      },
+      {
+        headers: {
+          // Pass the token as a cookie in the Cookie header
+          Cookie: `authToken=${token}`,
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true // Ensure credentials (cookies) are included in the request
       });
       //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
-      console.log('An error occured: ', err.message);
+      console.log('An error occured: ', err);
     }
-    res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user2=${encodeURIComponent(user)}`);
+    res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user)}`)
+
+    //res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user2=${encodeURIComponent(user)}`);
   }
 }
 
