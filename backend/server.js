@@ -48,7 +48,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files
 app.use('/static', (req, res, next) => {
   const filePath = path.join(__dirname, 'static', req.url);
-  console.log(`Static file being served: ${filePath}`);
+  //console.log(`Static file being served: ${filePath}`);
 
   // Serve the static file
   express.static(path.join(__dirname, 'static'))(req, res, (err) => {

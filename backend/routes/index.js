@@ -16,6 +16,10 @@ router.get('/public/:path', (req, res) => {
   res.render(path);
 });
 
+router.get('/location', (req, res) => {
+  res.render('location');
+})
+
 router.get('/check-auth', checkAuth);
 
 router.post('/login', UsersController.login);
