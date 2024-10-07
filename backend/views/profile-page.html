@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="../static/profile-page.css">
+    <link rel="stylesheet" href="../static/create_login_account.css">
 </head>
 <!--Will only be passing the main user object to this-->
 <body>
@@ -42,6 +42,10 @@
         <!--The curly braces have to end in exactly the right place,
             otherwise, i didn't change much-->
     </div>
+    <!--<button onclick="getLocation()">Get My Location</button>
+    <p id="location"></p>
+    <button onclick="reloadPage()">Try Again</button>-->
+
 
     <button type="button" id="logout">Logout</button>
 
@@ -64,6 +68,49 @@
                 }
             }, 1000 * 1); // Log out after 1 seconds
         });
+
+        // Must serve the whole website in https, unless in localhost
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    showPosition,
+                    showError,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+              document.getElementById('location').innerHTML = "Geolocation is not supported by this browser.";
+            }
+          }
+
+        function showPosition(position) {
+            document.getElementById('location').innerHTML =
+              "Latitude: " + position.coords.latitude +
+              "<br>Longitude: " + position.coords.longitude;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                document.getElementById('location').innerHTML = "Permission denied. Please refresh the page to try again or enable location in your browser settings.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                document.getElementById('location').innerHTML = "Location information is unavailable.";
+                break;
+              case error.TIMEOUT:
+                document.getElementById('location').innerHTML = "The request to get user location timed out.";
+                break;
+              case error.UNKNOWN_ERROR:
+                document.getElementById('location').innerHTML = "An unknown error occurred.";
+                break;
+            }
+        }
+        function reloadPage() {
+            location.reload();  // This reloads the current page
+        }
     </script>
 </body>
 
