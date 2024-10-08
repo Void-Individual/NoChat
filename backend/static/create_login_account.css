@@ -128,3 +128,85 @@ h3 {
     width: 100%;
   }
 }
+
+/*Quick edit*/
+
+/* Chat input and send button container */
+.chatContainer {
+  display: flex;
+  flex-flow: row nowrap;  /* Set the direction to row for horizontal alignment */
+  align-items: center;    /* Vertically align items */
+  justify-content: space-between;  /* Push the send button to the right */
+  margin-top: 10px;
+  width: 100%;  /* Make the container full width */
+}
+
+/*#message, #sendButton {
+  font-size: 14px;
+  margin: 10px 0;
+}*/
+
+#message {
+  flex-grow: 1;           /* Allow the message box to take all available space */
+  height: 40px;           /* Set height to match the send button */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-right: none;        /* Remove right border to eliminate the gap */
+  background-color: #f9f9f9;
+  border-radius: 5px 0 0 5px; /* Rounded corners, but flat on the right side */
+}
+
+#sendButton {
+  height: 40px;           /* Match the height of the message input */
+  padding: 0 20px;        /* Add some padding for a nice look */
+  border: 1px solid #ccc; /* Same border as the message input */
+  background-color: #007bff;
+  color: white;
+  border-radius: 0 5px 5px 0; /* Rounded corners on the right */
+  margin-left: 0;           /* No margin to remove any gaps */
+  display: inline-block;
+}
+
+#sendButton:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+#chatList {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: scroll;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+#chatList li {
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  word-wrap: break-word;
+}
+
+#chatList li.user {
+  background-color: #d4edda;
+  text-align: right;
+}
+
+#chatList li.other {
+  background-color: #f8d7da;
+  text-align: left;
+}
+
+/* Customize scrollbar */
+#chatList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chatList::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+ /*:end*/
