@@ -58,7 +58,10 @@ class DBClient {
       // Update the channels document or insert it if it doesn't exist
       await this.db.collection('files').updateOne(
         { name }, // Query to find the document by name
-        { $set: { data: subscribedChannels } }, // Update the data field with new channels
+        {
+          $set: { data: subscribedChannels }, // Update the data field with new channels
+          $inc: { channelCount: 1 } // Increment the channelCount by 1
+        },
         { upsert: true } // Insert a new document if it doesn't exist
         );
         console.log('Channels updated successfully');
@@ -84,6 +87,18 @@ class DBClient {
     if (this.connected && this.db) {
       const noFiles = await this.db.collection('files').countDocuments();
       return noFiles;
+    }
+    return 0;
+  }
+
+  async channelCount() {
+    if (this.connected && this.db) {
+      const subscribedChannels = await this.db.collection('files').findOne({ name: 'subscribedChannels'});
+      if (subscribedChannels.channelCount) {
+        return subscribedChannels.channelCount;
+      } else {
+        return 0;
+      }
     }
     return 0;
   }

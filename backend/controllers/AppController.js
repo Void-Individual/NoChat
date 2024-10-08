@@ -62,9 +62,12 @@ class AppController {
   static async getStats(req, res) {
     const users = await dbClient.nbUsers();
     const files = await dbClient.nbFiles();
+    const conversations = await dbClient.channelCount();
+    //console.log('Length:', conversations);
     const stats = {
       users, // Example data
       files, // Example data
+      conversations //
     };
     res.status(200).send(stats);
   }
