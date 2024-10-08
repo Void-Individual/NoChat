@@ -63,11 +63,13 @@ class AppController {
     const users = await dbClient.nbUsers();
     const files = await dbClient.nbFiles();
     const conversations = await dbClient.channelCount();
+    const usersOnline = await dbClient.users('Online');
     //console.log('Length:', conversations);
     const stats = {
       users, // Example data
       files, // Example data
-      conversations //
+      usersOnline,
+      conversations
     };
     res.status(200).send(stats);
   }

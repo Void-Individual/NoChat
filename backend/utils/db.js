@@ -91,6 +91,15 @@ class DBClient {
     return 0;
   }
 
+  async users(statusValue) {
+    if (this.connected && this.db) {
+      // Count documents of users who are online
+      const noUsers = await this.db.collection('users').countDocuments({ status: statusValue });
+      return noUsers;
+    }
+    return 0;
+  }
+
   async channelCount() {
     if (this.connected && this.db) {
       const subscribedChannels = await this.db.collection('files').findOne({ name: 'subscribedChannels'});
