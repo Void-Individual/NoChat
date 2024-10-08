@@ -1,4 +1,4 @@
-#!usr/bin/bash
+#!/usr/bin/bash
 # Script to install all the required dependencies for this project
 
 # To use this file, run ./install.sh from project the directory
