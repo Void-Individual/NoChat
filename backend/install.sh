@@ -14,6 +14,38 @@ check_and_install_npm_package() {
     fi
 }
 
+# Check if npm is installed
+if ! command -v npm &> /dev/null
+then
+    echo "npm is not installed. Installing Node.js and npm..."
+
+    # Update package list and install Node.js and npm
+    sudo apt update
+    sudo apt install -y nodejs npm
+
+    # Verify installation
+    if command -v npm &> /dev/null
+    then
+        echo "Node.js and npm installed successfully."
+    else
+        echo "Installation failed. Please check the errors and try again."
+        exit 1
+    fi
+else
+    echo "npm is already installed."
+fi
+
+# Add npm to PATH if necessary
+if ! echo "$PATH" | grep -q "$(dirname $(which npm))"
+then
+    echo "Adding npm to PATH..."
+    echo 'export PATH=$PATH:'"$(dirname $(which npm))" >> ~/.bashrc
+    source ~/.bashrc
+    echo "npm added to PATH."
+else
+    echo "npm is already in PATH."
+fi
+
 # Check if package.json exists
 if [ -f "package.json" ]; then
     echo "package.json found. Installing dependencies..."
@@ -72,6 +104,7 @@ if [ -f "package.json" ]; then
     check_and_install_npm_package "socket.io"
     check_and_install_npm_package "redis"
     check_and_install_npm_package "mongodb"
+    check_and_install_npm_package "axios"
     check_and_install_npm_package "ejs"
     check_and_install_npm_package "cookie-parser"
     check_and_install_npm_package "uuid"
