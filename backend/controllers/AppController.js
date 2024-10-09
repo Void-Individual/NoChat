@@ -171,6 +171,14 @@ async function checkChannels(user1, user2) {
     subscribedChannels[user2][user1] = newChannel;
     startChatChannel(newChannel);
     await dbClient.updateChannels(subscribedChannels);
+    await dbClient.db.collection('users').updateOne(
+      { username: user1 },
+      { $push: { conversations: user2 }}, // Update the data field with new channels
+    );
+    await dbClient.db.collection('users').updateOne(
+      { username: user2 },
+      { $push: { conversations: user1 }}, // Update the data field with new channels
+    );
     // Add the new user to the list of contacts for both user after a channel has been created
     console.log('Started a new channel for:', user1, user2);
   }

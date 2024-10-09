@@ -18,13 +18,14 @@
     <form action="/user/search" method="GET">
         <input type="text" id="search" placeholder="Search for username" name="search" required>
         <button type="submit">Search</button>
+        <!--<p>Your conversations: <%= user.conversations %></p>-->
     </form>
     <div id="search-results">
         <!--Please note that good indentation is neccesary to stop EJS code from
-        looking too pushed forward, and help the readability of the data structure-->
-        <% if (results) { %>
-            <ul>
-                <% results.forEach(result=> { %>
+            looking too pushed forward, and help the readability of the data structure-->
+            <% if (results) { %>
+                <ul>
+                    <% results.forEach(result=> { %>
                     <% if (result.badMatch) { %>
                         <li>
                             <%= result.username %>
@@ -38,19 +39,44 @@
                     <% } %>
                 <% }) %>
             </ul>
-        <% } %>
-        <!--The curly braces have to end in exactly the right place,
+            <% } %>
+            <!--The curly braces have to end in exactly the right place,
             otherwise, i didn't change much-->
-    </div>
-    <!--<button onclick="getLocation()">Get My Location</button>
-    <p id="location"></p>
-    <button onclick="reloadPage()">Try Again</button>-->
+        </div>
+
+        <div>
+            <% if (user.conversations) { %>
+                <ul>
+                    <% user.conversations.forEach(username=> { %>
+                        <li>
+                            <a href="/user/<%= username %>">
+                                <%= username %>
+                            </a>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p>You haven't texted anyone yet. You can start with</p>
+                <a href="/user/void">void</a>
+            <% } %>
+        </div>
+        <!--<button onclick="getLocation()">Get My Location</button>
+            <p id="location"></p>
+        <button onclick="reloadPage()">Try Again</button>-->
 
 
     <button type="button" id="logout">Logout</button>
 
     <script>
-        // This is a script to handle the redirection endpoint if logout is clicked
+        // If the page is reloaded, remove the search options completely
+        const [navigation] = performance.getEntriesByType("navigation");
+        if (navigation && navigation.type === "reload") {
+          console.log("The page was reloaded.");
+          window.location.href = '/user/me';
+
+        }
+
+          // This is a script to handle the redirection endpoint if logout is clicked
         const create = document.querySelector('#logout');
         create.addEventListener('click', async (e) => {
             console.log('Running logout') // This is merely for frontend examination
