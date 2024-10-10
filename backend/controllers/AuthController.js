@@ -66,6 +66,44 @@ class AuthController {
     }
   }
 
+  static async toggleStatus(req, res) {
+    try {
+      console.log('Toggling status')
+      const token = req.cookies.authToken;
+      const _id = await redisClient.get(`auth_${token}`);
+      const user = await findOneUser(dbClient, { _id });
+
+      let status = '';
+      if (user.status === 'Offline') {
+        status = 'Online';
+      } else {
+        status = 'Offline';
+      }
+
+      // Toggle the status' state
+      try {
+        const result = await dbClient.db.collection('users').updateOne(
+          { _id: ObjectId(_id) },  // The filter to find the user document by ID
+          { $set: { status } }  // Update operation to set the status to "Offline"
+        );
+
+        // Check if exactly one document was modified
+        if (result.modifiedCount === 1) {
+          console.log(`${user.username} is now ${status}`);
+        } else {
+          console.log(`No update occurred for ${user.username}.`);
+          // This log could indicate that the user was already offline or the user was not found.
+        }
+      } catch (error) {
+        console.error(`An error occurred while trying to set ${user.username} ${status}:`, error);
+      }
+
+      res.status(204).send();
+    } catch (err) {
+      console.log('An error occured while toggling the status:', err.message);
+    }
+  }
+
   static async getDisconnect(req, res) {
     try {
       const token = req.cookies.authToken;

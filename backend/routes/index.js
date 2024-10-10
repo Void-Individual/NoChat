@@ -35,6 +35,7 @@ router.get('/getChatChannelFile', FilesController.getChatFile)
 router.post('/saveChatChannelFile', FilesController.saveChatFile)
 
 router.get('/disconnect', AuthController.getDisconnect);
+router.get('/status', AuthController.toggleStatus);
 
 
 router.get('/connect', AuthController.getConnect);
