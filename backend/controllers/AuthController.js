@@ -81,6 +81,7 @@ class AuthController {
       }
 
       // Toggle the status' state
+      console.log('Making the user ', status)
       try {
         const result = await dbClient.db.collection('users').updateOne(
           { _id: ObjectId(_id) },  // The filter to find the user document by ID

@@ -139,9 +139,8 @@ class FilesController {
         return;
       }
 
-      const { channel, message, user2 } = req.body;
+      const { channel, message, user2, mediaPath } = req.body;
 
-      console.log(`Channel: ${channel}, for ${mainUser.username} and ${user2}, message: ${message}`);
       // Find or create the channel document
       let channelFile = await findOneFile(dbClient, { name: channel });
       if (!channelFile) {
@@ -154,22 +153,32 @@ class FilesController {
         channelFile = result.ops[0];
       }
 
-      // Append the message to the temp file
-      const folderPath = checkLocalPath();
-      const fileName = channel;
-      const filePath = path.join(folderPath, fileName);
-      const decodedData = decodeBase64Data(message);
-      fs.appendFileSync(filePath, decodedData);
+      // Read media file and encode it as base64
+      let mediaData = null;
+      if (mediaPath) {
+          const fileData = fs.readFileSync(mediaPath);
+          mediaData = {
+              filename: path.basename(mediaPath),
+              contentType: 'image/jpeg', // Adjust content type based on file type
+              data: fileData.toString('base64')
+          };
+      }
 
-      // Update the channel document in the database with the new message
-    const updatedData = [...(channelFile.data || []), message];
-    await dbClient.db.collection('files').updateOne(
-      { name: channel },
-      { $set: { data: updatedData } }
-    );
-    //console.log('ENd of save')
-    res.status(200).send({ data: 'Success'});
-    //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
+      // Append the message and media to the channel's data
+      const newEntry = [ message, media: mediaData ];
+      await dbClient.db.collection('files').updateOne(
+          { name: channel },
+          { $push: { data: newEntry } }
+      );
+
+      // Clean up uploaded file after saving to MongoDB
+      if (mediaPath) {
+        fs.unlinkSync(mediaPath);
+      }
+
+
+      res.status(200).send({ data: 'Success'});
+      //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
       console.log('An error occured:', err.message);
       res.render('error-page', { error: 'An error occurred while saving your messages' });
@@ -212,6 +221,7 @@ class FilesController {
 
       // Retrieve messages from the channel document
       const messages = channelFile.data || [];
+      console.log(messages)
 
       res.render('chat-page', { user1: mainUser, user2: otherUser, channel, chat: messages });
     } catch (err) {

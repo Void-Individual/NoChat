@@ -1,9 +1,27 @@
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import { v4 as uuidV4 } from 'uuid';
+import path from 'path';
 
 const { ObjectId } = require('mongodb');
 const axios = require('axios');
+
+const multer = require('multer');
+
+// Configure Multer with disk storage to retain original filename and extension
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Save to 'uploads' directory
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now()
+    const extension = path.extname(file.originalname); // Get original file extension
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension); // Filename with original extension
+  }
+});
+
+// Configure Multer to specify the upload directory and file handling
+const upload = multer({ storage: storage }); // Files will be saved to 'uploads' directory
 
 const waitConnection = (client) => new Promise((resolve, reject) => {
   let i = 0;
@@ -119,6 +137,12 @@ class AppController {
     }
     const { user } = req.params;
     const { message } = req.body;
+    const file = req.file; // Get the uploaded file from the request
+
+    if (file) {
+
+    }
+
     const allChannels = await dbClient.subscribedChannels();
     const channel = allChannels[mainUser.username][user];
     console.log(`Main user: ${mainUser.username} is chatting with ${user}`);
@@ -131,27 +155,26 @@ class AppController {
 
     // Make an internal request to save the chat instead of redirecting
     try {
-      console.log('--------------------------------------------')
-      const response = await axios.post(`${req.protocol}://${req.get('host')}/saveChatChannelFile`, {
+      // Prepare payload for `saveChatFile`
+      const payload = {
         channel,
         message,
-        user2: user
-      },
-      {
+        user2: user,
+        mediaPath: file ? file.path : null // Include media path if a file was uploaded
+      };
+      await axios.post(`${req.protocol}://${req.get('host')}/saveChatChannelFile`, payload, {
         headers: {
           // Pass the token as a cookie in the Cookie header
           Cookie: `authToken=${token}`,
           'Content-Type': 'application/json'
         },
         withCredentials: true // Ensure credentials (cookies) are included in the request
-      });
+    });
       //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
       console.log('An error occured: ', err);
     }
     res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user)}`)
-
-    //res.redirect(`/saveChatChannelFile?channel=${encodeURIComponent(channel)}&message=${encodeURIComponent(message)}&user2=${encodeURIComponent(user)}`);
   }
 }
 

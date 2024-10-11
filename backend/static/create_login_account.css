@@ -171,6 +171,55 @@ h3 {
   background-color: #0056b3; /* Darker blue on hover */
 }
 
+#conversationList {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+  max-height: 300px;
+  /*overflow-y: scroll;*/
+  /*background-color: #2b244e;
+  border: 1px solid #ccc;
+  border-radius: 10px;*/
+  background: linear-gradient(135deg, #3b2c68, #2b244e); /* Darker purple gradient */
+  border: 1px solid #5c4d8a; /* Darker purple border */
+  border-radius: 10px;
+  color: #e4d9ff; /* Light purple text color for contrast */
+}
+
+#conversationList li {
+  padding: 8px;
+  margin-bottom: 10px;
+  /*background-color: #e0e0e0;*/
+  background-color: #4b3d7b;
+  border-radius: 5px;
+  word-wrap: break-word;
+  color: #f0e6ff; /* Light text color for readability */
+}
+
+#searchList {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: scroll;
+  /*background-color: #18142e;
+  border: 1px solid #cd8f8f;*/
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4e3b89, #30264c); /* Lighter purple gradient */
+border: 1px solid #7a67b1; /* Lighter purple border */
+  color: #e4d9ff; /* Light purple text color for contrast */
+}
+
+#searchList li {
+  padding: 8px;
+  margin-bottom: 10px;
+  /*background-color: #e0e0e0;*/
+  background-color: #5d4a94; /* Slightly lighter item background */
+  border-radius: 5px;
+  word-wrap: break-word;
+  color: #f0e6ff; /* Light text color for readability */
+}
+
 #chatList {
   list-style-type: none;
   padding: 10px;

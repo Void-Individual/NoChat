@@ -19,26 +19,26 @@
         <input type="text" id="search" placeholder="Search for username" name="search" required>
         <button type="submit">Search</button>
         <!--<p>Your conversations: <%= user.conversations %></p>-->
-    </form>
-    <div id="search-results">
-        <!--Please note that good indentation is neccesary to stop EJS code from
-            looking too pushed forward, and help the readability of the data structure-->
-            <% if (results) { %>
-                <ul>
+        <div id="search-results">
+            <!--Please note that good indentation is neccesary to stop EJS code from
+                looking too pushed forward, and help the readability of the data structure-->
+            <% if (results.length !== 0) { %>
+                <ul id="searchList">
+                    <p>Search results:</p>
                     <% results.forEach(result=> { %>
-                    <% if (result.badMatch) { %>
-                        <li>
-                            <%= result.username %>
-                        </li>
-                    <% } else { %>
-                        <li>
-                            <a href="/user/<%= result.username %>">
+                        <% if (result.badMatch) { %>
+                            <li>
                                 <%= result.username %>
-                            </a>
-                        </li>
-                    <% } %>
-                <% }) %>
-            </ul>
+                            </li>
+                        <% } else if (user.username !== result.username) { %>
+                            <li>
+                                <a href="/user/<%= result.username %>">
+                                    <%= result.username %>
+                                </a>
+                            </li>
+                        <% } %>
+                    <% }) %>
+                </ul>
             <% } %>
             <!--The curly braces have to end in exactly the right place,
             otherwise, i didn't change much-->
@@ -46,7 +46,8 @@
 
         <div>
             <% if (user.conversations) { %>
-                <ul>
+                <ul id="conversationList">
+                    <p>Chat:</p>
                     <% user.conversations.forEach(username=> { %>
                         <li>
                             <a href="/user/<%= username %>">
@@ -55,13 +56,16 @@
                         </li>
                     <% }) %>
                 </ul>
-            <% } else { %>
+            <% } else if (user.username !== 'Void') { %>
                 <p>You haven't texted anyone yet. You can start with</p>
-                <a href="/user/void">void</a>
+                <li>
+                    <a href="/user/Void">Void</a>
+                </li>
             <% } %>
         </div>
-        <!--<button onclick="getLocation()">Get My Location</button>
-            <p id="location"></p>
+    </form>
+                    <!--<button onclick="getLocation()">Get My Location</button>
+                        <p id="location"></p>
         <button onclick="reloadPage()">Try Again</button>-->
 
 

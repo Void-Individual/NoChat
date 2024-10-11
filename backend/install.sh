@@ -108,6 +108,9 @@ if [ -f "package.json" ]; then
     check_and_install_npm_package "ejs"
     check_and_install_npm_package "cookie-parser"
     check_and_install_npm_package "uuid"
+    check_and_install_npm_package "multer"
+    check_and_install_npm_package "form-data"
+    check_and_install_npm_package "multer-gridfs-storage"
 
     echo "All required npm packages are installed."
 
