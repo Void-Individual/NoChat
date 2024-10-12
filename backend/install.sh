@@ -102,8 +102,10 @@ if [ -f "package.json" ]; then
     if ! sudo systemctl is-active --quiet redis-server; then
         echo "Starting Redis..."
         sudo systemctl start redis-server
+
 	redis-server /etc/redis/redis.conf
-        sudo systemctl enable redis-server
+        
+	sudo systemctl enable redis-server
     else
         echo "Redis is already running."
     fi
