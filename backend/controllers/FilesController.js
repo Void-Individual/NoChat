@@ -165,10 +165,13 @@ class FilesController {
       }
 
       // Append the message and media to the channel's data
-      const newEntry = [ message, media: mediaData ];
+      const newEntry = [ message ];
+      if (mediaData !== null) {
+        newEntry.push(mediaData);
+      }
       await dbClient.db.collection('files').updateOne(
-          { name: channel },
-          { $push: { data: newEntry } }
+        { name: channel },
+        { $push: { data: { $each: newEntry } } }
       );
 
       // Clean up uploaded file after saving to MongoDB
