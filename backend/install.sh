@@ -55,13 +55,13 @@ fi
 if [ -f "package.json" ]; then
     echo "package.json found. Installing dependencies..."
     # install check updates if it doesnt exist
-    npm install -g npm-check-updates
+    #npm install -g npm-check-updates
     # update the packagss in package.json
-    npx npm-check-updates -u
+    #npx npm-check-updates -u
 
     npm install
     # Attempt to fix any errors automatically
-    npm audit fix
+    #npm audit fix
 
     echo "Dependencies installed successfully."
 
