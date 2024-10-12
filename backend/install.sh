@@ -22,7 +22,6 @@ then
     # Update package list and install Node.js and npm
     sudo apt update
     # Add the NodeSource repository for the latest Node.js version
-    curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
     sudo apt install -y nodejs npm
     npm -v
     node -v
@@ -54,9 +53,9 @@ fi
 if [ -f "package.json" ]; then
     echo "package.json found. Installing dependencies..."
     # install check updates if it doesnt exist
-    npm install -g npm-check-updates
+    #npm install -g npm-check-updates
     # update the packagss in package.json
-    npx npm-check-updates -u
+    #npx npm-check-updates -u
 
     npm install
     # Attempt to fix any errors automatically
