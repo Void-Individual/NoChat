@@ -21,7 +21,11 @@ then
 
     # Update package list and install Node.js and npm
     sudo apt update
+    # Add the NodeSource repository for the latest Node.js version
+    curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
     sudo apt install -y nodejs npm
+    npm -v
+    node -v
 
     # Verify installation
     if command -v npm &> /dev/null
@@ -49,7 +53,15 @@ fi
 # Check if package.json exists
 if [ -f "package.json" ]; then
     echo "package.json found. Installing dependencies..."
+    # install check updates if it doesnt exist
+    npm install -g npm-check-updates
+    # update the packagss in package.json
+    npx npm-check-updates -u
+
     npm install
+    # Attempt to fix any errors automatically
+    npm audit fix
+    
     echo "Dependencies installed successfully."
 
     # Check if MongoDB is installed
@@ -90,6 +102,7 @@ if [ -f "package.json" ]; then
     if ! sudo systemctl is-active --quiet redis-server; then
         echo "Starting Redis..."
         sudo systemctl start redis-server
+	redis-server /etc/redis/redis.conf
         sudo systemctl enable redis-server
     else
         echo "Redis is already running."
