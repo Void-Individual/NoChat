@@ -14,6 +14,7 @@ check_and_install_npm_package() {
     fi
 }
 
+
 # Check if npm is installed
 if ! command -v npm &> /dev/null
 then
