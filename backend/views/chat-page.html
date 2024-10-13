@@ -69,12 +69,17 @@
                 // Check if the extension is either 'jpg' or 'jpeg'
               %>
               <% if (['jpg', 'jpeg'].includes(fileExtension)) { %>
-                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="<%= (line.sp
-lit(':')[2]) %>" width="500">                                                                           <% } else if (['mp4', 'webm'].includes(fileExtension)) { %>                                 <video width="500" controls>
-                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">                                                                                      Your browser does not support the video tag.                                            </video>
-              <% } else if (['mp3', 'm4a', 'mp4', 'wav', 'ogg'].includes(fileExtension)) { %>                                                                                                       <audio controls>                                                                            <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="audio/
-<%= fileExtension %>">                                                                                      Your browser does not support the audio tag.                                            </audio>
-            <% } %>                                                                       
+                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="<%= (line.split(':')[2]) %>" width="500">
+              <% } else if (['mp4', 'webm'].includes(fileExtension)) { %>
+                <video width="500" controls>
+                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">
+                    Your browser does not support the video tag.
+                </video>
+              <% } else if (['mp3', 'm4a', 'mp4', 'wav', 'ogg'].includes(fileExtension)) { %>
+                <audio controls>
+                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="audio/<%= fileExtension %>">
+                  Your browser does not support the audio tag.                                            </audio>
+            <% } %>
           <% } else { %>
             <li class="other"><%= line %></li>
           <% } %>
