@@ -140,7 +140,7 @@ class AppController {
     const file = req.file; // Get the uploaded file from the request
 
     if (file) {
-
+      console.log('Media was recieved:', file)
     }
 
     const allChannels = await dbClient.subscribedChannels();
@@ -160,7 +160,7 @@ class AppController {
         channel,
         message,
         user2: user,
-        mediaPath: file ? file.path : null // Include media path if a file was uploaded
+        mediaPath: file ? file : null // Include media path if a file was uploaded
       };
       await axios.post(`${req.protocol}://${req.get('host')}/saveChatChannelFile`, payload, {
         headers: {
@@ -172,7 +172,7 @@ class AppController {
     });
       //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
-      console.log('An error occured: ', err);
+      console.log('An error occured with axios: ', err);
     }
     res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user)}`)
   }

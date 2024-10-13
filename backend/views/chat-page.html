@@ -25,12 +25,23 @@
         <!--If the line of conversation belongs to this page user-->
         <% if (line.split(':')[0]===user1.username) { %>
           <!--Replace and customize the outpu with "You"-->
-          <li class="user">You: <%= (line.split(':')[1]) %>
-          </li>
+          <% if (line.split(':')[1]===' Stored data') { %>
+            <!--<li class="user">You: <%= (line.split(':')[2]) %></li>-->
+            <li class="user">
+              <p style="margin: 0; text-align: left;">You:</p>
+              <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="Description of image" width="500">
+            </li>
           <% } else { %>
-            <!--Display the line the way it mustve been saved if it belongs to the second user-->
-            <li class="other">
-              <%= line %>
+            <li class="user">You: <%= (line.split(':')[1]) %></li>
+          <% } %>
+        <% } else { %>
+          <!--Display the line the way it mustve been saved if it belongs to the second user-->
+          <% if (line.split(':')[1]===' Stored data') { %>
+            <li class="other"><%= user2.username%>:<%=(line.split(':')[2]) %></li>
+          <% } else { %>
+            <li class="other"><%= line %></li>
+          <% } %>
+
             </li>
             <% } %>
               <% }) %>
@@ -43,12 +54,12 @@
   <div class="chatContainer">
     <input id="message" placeholder="Type a message..." name="message"></input>
     <button id="sendButton">Send</button>
+    <input type="file" id="fileInput" name="media" accept="image/*,video/*,audio/*">
     <!--<button id="sendMedia">Send Media</button>-->
-    <!--<form id="uploadForm">
-      <input type="file" id="fileInput" name="media" accept="image/*,video/*,audio/*">
-      <button type="submit">Upload</button>
-    </form>-->
   </div>
+  <!--<form id="uploadForm">
+    <button type="submit">Upload</button>
+  </form>-->
   <!--<a href="/chat/<%= user1 %>" class="button-link">Chat</a>-->
 
 
@@ -73,12 +84,19 @@
       // If a new message is published and is sent
       if (sender === user1) {
         // If the sender is this main user, trigger the user class
-        newMessage.className = 'user';
-        newMessage.textContent = `You: ${message.split(':')[1]}`;
+        if (message.split(':')[1] !== 'Sent media') {
+          console.log('Aye')
+          newMessage.className = 'user';
+          newMessage.textContent = `You: ${message.split(':')[1]}`;
+          window.location.reload();
+        }
       } else {
         // Trigger the alternate other class
-        newMessage.className = 'other';
-        newMessage.textContent = `${message}`;
+        if (message.split(':')[1] !== 'Sent media') {
+          newMessage.className = 'other';
+          newMessage.textContent = `${message}`;
+          window.location.reload();
+        }
       }
       // Update the webpage. This script will run on the 2 active webpages
       // and so while theyre running separately, they will be achieving the same result
@@ -91,15 +109,31 @@
 
     // Function to send message
     async function sendMessage() {
+      const formData = new FormData();
       // Retrieve and trim the passed message of all whitespaces
       const messageInput = document.getElementById('message')
-      const message = messageInput.value.trim();
+      let message = messageInput.value.trim();
+
+      const fileInput = document.getElementById('fileInput');
+      let file = null
+      if (fileInput) {
+        file = fileInput.files[0]; // Get the selected file
+        formData.append('media', file); // Append the file to the form data
+      }
+
 
       // If it turns out to be blank...
       if (message === '') {
-        alert('Please type a message.');
-        return;
+        if (file) {
+          console.log('Passing media');
+          message = 'Sent media';
+        } else {
+          alert('Please type a message.');
+          return;
+        }
       }
+      formData.append('message', `${user1}: ${message}`); // Append the file to the form data
+
 
       spam = true;
 
@@ -109,11 +143,8 @@
         const response = await fetch(`/chat-send/${user2}`, {
           method: 'POST',
           credentials: 'include', // Include cookies with the request
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Include the message as a json to the body of the request
-          body: JSON.stringify({ message: `${user1}: ${message}` }),
+          body: formData
+          //body: JSON.stringify({ message: `${user1}: ${message}` }),
         });
 
         // If it was successful...
@@ -149,33 +180,33 @@
     };
 
     // Script to handle file upload
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent the default form submission
+    //document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    //  event.preventDefault(); // Prevent the default form submission
 
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0]; // Get the selected file
+    //  const fileInput = document.getElementById('fileInput');
+    //  const file = fileInput.files[0]; // Get the selected file
 
-      if (!file) {
-        alert('Please select a file to upload');
-        return;
-      }
+    //  if (!file) {
+    //    alert('Please select a file to upload');
+    //    return;
+    //  }
 
-      const formData = new FormData();
-      formData.append('media', file); // Append the file to the form data
+    //  const formData = new FormData();
+    //  formData.append('media', file); // Append the file to the form data
 
-      // Send the form data using fetch API
-      fetch('/upload', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('File uploaded successfully:', data);
-      })
-      .catch(error => {
-        console.error('Error uploading file:', error);
-      });
-    });
+    //  // Send the form data using fetch API
+    //  fetch('/upload', {
+    //    method: 'POST',
+    //    body: formData
+    //  })
+    //  .then(response => response.json())
+    //  .then(data => {
+    //    console.log('File uploaded successfully:', data);
+    //  })
+    //  .catch(error => {
+    //    console.error('Error uploading file:', error);
+    //  });
+    //});
   </script>
 </body>
 

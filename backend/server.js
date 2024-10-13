@@ -45,6 +45,12 @@ app.set('view engine', 'html'); // But set it to html for html files
 // Set the 'views' directory for html files to be called with ejs
 app.set('views', path.join(__dirname, 'views'));
 
+// Serve static files from the 'assets' directory
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+// Serve static files from the 'assets' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Serve static files
 app.use('/static', (req, res, next) => {
   const filePath = path.join(__dirname, 'static', req.url);

@@ -5,6 +5,9 @@ import { checkAuth, AuthController } from '../controllers/AuthController';
 import FilesController from '../controllers/FilesController';
 import multer from 'multer';
 import path from 'path';
+import dbClient from '../utils/db';
+const fs = require('fs');
+
 
 const router = express.Router();
 
@@ -21,7 +24,7 @@ const storage = multer.diskStorage({
 });
 
 // Configure Multer to specify the upload directory and file handling
-const upload = multer({ storage: storage }); // Files will be saved to 'uploads' directory
+const upload = multer({ storage }); // Files will be saved to 'uploads' directory
 
 router.get('/', (req, res) => {
   res.render('index');
@@ -37,6 +40,25 @@ router.get('/public/:path', (req, res) => {
 router.get('/location', (req, res) => {
   res.render('location');
 })
+
+router.post('/media', async (req, res) => {
+  const uniqueName = req.body.media;
+  const fileName = uniqueName.split('++')[1]; // Extract filename
+  const localPath = path.join(__dirname, 'uploads', fileName); // Build the path to the file
+
+  fs.access(localPath, fs.constants.F_OK, async (err) => {
+    if (err) {
+      //return res.status(404).send('File not found');
+      const mediaData = await dbClient.db.collection('media').findOne({ uniqueName });
+      if (!mediaData) {
+        res.send({data: 'No match'})
+      }
+    }
+    // If the file is found in the localpath, send it as a response
+    res.sendFile(localPath);
+  });
+
+});
 
 // Route to handle file uploads
 //router.post('/upload', upload.single('media'), (req, res) => {

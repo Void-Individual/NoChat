@@ -156,18 +156,28 @@ class FilesController {
       // Read media file and encode it as base64
       let mediaData = null;
       if (mediaPath) {
-          const fileData = fs.readFileSync(mediaPath);
-          mediaData = {
-              filename: path.basename(mediaPath),
-              contentType: 'image/jpeg', // Adjust content type based on file type
-              data: fileData.toString('base64')
-          };
+        console.log('Encoding media')
+        const fileData = fs.readFileSync(mediaPath.path);
+        //console.log(mediaPath)
+        if (fileData) {
+          console.log('There was file data')
+        }
+        mediaData = {
+          filename: mediaPath.path,
+          originalName: mediaPath.originalname,
+          uniqueName: `${mediaPath.originalname}++${mediaPath.path}`,
+          contentType: mediaPath.mimetype, // Adjust content type based on file type
+          data: fileData.toString('base64')
+        };
+        //await dbClient.collection('media').insertOne(mediaData);
       }
 
+      //console.log('here?')
       // Append the message and media to the channel's data
       const newEntry = [ message ];
       if (mediaData !== null) {
-        newEntry.push(mediaData);
+        console.log('Storing media with name:', mediaData.uniqueName)
+        newEntry.push(`${mainUser.username}: Stored data: ${mediaData.uniqueName}`);
       }
       await dbClient.db.collection('files').updateOne(
         { name: channel },
@@ -175,15 +185,15 @@ class FilesController {
       );
 
       // Clean up uploaded file after saving to MongoDB
-      if (mediaPath) {
-        fs.unlinkSync(mediaPath);
-      }
+      //if (mediaPath) {
+      //  fs.unlinkSync(mediaPath.path);
+      //}
 
 
       res.status(200).send({ data: 'Success'});
       //res.redirect(`/getChatChannelFile?channel=${encodeURIComponent(channel)}&user2=${encodeURIComponent(user2)}`)
     } catch (err) {
-      console.log('An error occured:', err.message);
+      console.log('An error occured with SendChat:', err.message);
       res.render('error-page', { error: 'An error occurred while saving your messages' });
       //res.status(500).send({ error: 'An error occurred while saving the message' });
     }
