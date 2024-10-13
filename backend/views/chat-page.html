@@ -41,7 +41,12 @@
                   <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">
                   Your browser does not support the video tag.
                 </video>
-              <% }%>
+              <% } else if (['mp3', 'wav', 'ogg'].includes(fileExtension)) { %>
+                <audio controls>
+                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="audio/<%= fileExtension %>">
+                  Your browser does not support the audio tag.
+                </audio>
+            <% } %>
             </li>
           <% } else { %>
             <li class="user">You: <%= (line.split(':')[1]) %></li>
