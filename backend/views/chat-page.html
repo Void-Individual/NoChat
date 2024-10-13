@@ -35,8 +35,12 @@
 
               // Check if the extension is either 'jpg' or 'jpeg'
               if (['jpg', 'jpeg'].includes(fileExtension)) { %>
-                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="Description of image" width="500">
-              <% } %>
+                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="<%= (line.split(':')[2]) %>" width="500">
+              <% } else if (['mp4', 'webm'].includes(fileExtension)) { %>
+                <video width="500" controls>
+                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">
+                    Your browser does not support the video tag.
+                </video>%>
             </li>
           <% } else { %>
             <li class="user">You: <%= (line.split(':')[1]) %></li>
