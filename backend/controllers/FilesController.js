@@ -224,7 +224,7 @@ class FilesController {
 
       // Retrieve messages from the channel document
       const messages = channelFile.data || [];
-      console.log(messages)
+      // console.log(messages)
 
       res.render('chat-page', { user1: mainUser, user2: otherUser, channel, chat: messages });
     } catch (err) {
