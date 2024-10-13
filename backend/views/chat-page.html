@@ -29,7 +29,14 @@
             <!--<li class="user">You: <%= (line.split(':')[2]) %></li>-->
             <li class="user">
               <p style="margin: 0; text-align: left;">You:</p>
-              <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="Description of image" width="500">
+              <%
+              // Extract the file extension from the line
+              const fileExtension = line.split('.').pop().toLowerCase();
+
+              // Check if the extension is either 'jpg' or 'jpeg'
+              if (['jpg', 'jpeg'].includes(fileExtension)) { %>
+                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="Description of image" width="500">
+              <% } %>
             </li>
           <% } else { %>
             <li class="user">You: <%= (line.split(':')[1]) %></li>
