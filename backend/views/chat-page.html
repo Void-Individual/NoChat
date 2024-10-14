@@ -41,18 +41,22 @@
               <%
                 // Extract the file extension from the line
                 const fileExtension = line.split('.').pop().toLowerCase();
+                // Extract the file name itself
+                const fileName = (line.split(':')[2]);
+                // Extract the file path
+                const filePath = (line.split(':')[2]).split('++')[1];
                 // Check if the extension is either 'jpg' or 'jpeg'
               %>
               <% if (['jpg', 'jpeg'].includes(fileExtension)) { %>
-                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="<%= (line.split(':')[2]) %>" width="500">
+                <img src="../<%= filePath %>" alt="<%= fileName %>" width="500">
               <% } else if (['mp4', 'webm'].includes(fileExtension)) { %>
                 <video width="500" controls>
-                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">
+                  <source src="../<%= filePath %>" type="video/<%= fileExtension %>">
                   Your browser does not support the video tag.
                 </video>
               <% } else if (['mp3', 'm4a', 'mp4', 'wav', 'ogg'].includes(fileExtension)) { %>
                 <audio controls>
-                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="audio/<%= fileExtension %>">
+                  <source src="../<%= filePath %>" type="audio/<%= fileExtension %>">
                   Your browser does not support the audio tag.
                 </audio>
             <% } %>
@@ -63,34 +67,40 @@
         <% } else { %>
           <!--Display the line the way it mustve been saved if it belongs to the second user-->
           <% if (line.split(':')[1]===' Stored data') { %>
-            <p style="margin: 0; text-align: left;">You:</p>                                          <%
+            <li class="other">
+              <p style="margin: 0; text-align: left;"><%= user2.username %>:</p>
+              <%
                 // Extract the file extension from the line
                 const fileExtension = line.split('.').pop().toLowerCase();
+                // Extract the file name itself
+                const fileName = (line.split(':')[2]);
+                // Extract the file path
+                const filePath = (line.split(':')[2]).split('++')[1];
                 // Check if the extension is either 'jpg' or 'jpeg'
               %>
               <% if (['jpg', 'jpeg'].includes(fileExtension)) { %>
-                <img src="../<%= (line.split(':')[2]).split('++')[1] %>" alt="<%= (line.split(':')[2]) %>" width="500">
+                <img src="../<%= filePath %>" alt="<%= fileName %>" width="500">
               <% } else if (['mp4', 'webm'].includes(fileExtension)) { %>
                 <video width="500" controls>
-                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="video/<%= fileExtension %>">
+                  <source src="../<%= filePath %>" type="video/<%= fileExtension %>">
                     Your browser does not support the video tag.
                 </video>
               <% } else if (['mp3', 'm4a', 'mp4', 'wav', 'ogg'].includes(fileExtension)) { %>
                 <audio controls>
-                  <source src="../<%= (line.split(':')[2]).split('++')[1] %>" type="audio/<%= fileExtension %>">
-                  Your browser does not support the audio tag.                                            </audio>
-            <% } %>
+                  <source src="../<%= filePath %>" type="audio/<%= fileExtension %>">
+                  Your browser does not support the audio tag.
+                </audio>
+              <% } %>
+            </li>
           <% } else { %>
             <li class="other"><%= line %></li>
           <% } %>
-
-            </li>
-            <% } %>
-              <% }) %>
-                <% } else { %>
-                  <!--If no conversation exists, display this instead-->
-                  <p>No one has started a conversation yet</p>
-                  <% } %>
+        <% } %>
+      <% }) %>
+    <% } else { %>
+      <!--If no conversation exists, display this instead-->
+      <p>No one has started a conversation yet</p>
+    <% } %>
   </ul>
 
   <div class="chatContainer">
