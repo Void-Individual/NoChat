@@ -48,8 +48,11 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files from the 'assets' directory
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Serve static files from the 'assets' directory
+// Serve static files from the 'uploads' directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Serve static files from the 'scripts' directory
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 
 // Serve static files
 app.use('/static', (req, res, next) => {
