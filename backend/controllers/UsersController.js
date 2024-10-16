@@ -67,8 +67,8 @@ class UsersController {
 
       const missingFields = ['email','password','username'].filter(f => !req.body[f]);
       if (missingFields.length) {
-        //res.status(400).send({ error: `Missing ${missingFields[0]}` });
-        res.render('error-page', { error: `Missing ${missingFields[0]}` });
+        res.status(400).send({ error: `Missing ${missingFields[0]}` });
+        //res.render('error-page', { error: `Missing ${missingFields[0]}` });
 
         return;
       }
@@ -76,8 +76,10 @@ class UsersController {
       // Check if the email has been used
       const checkEmail = await findOneUser(dbClient, { email });
       if (checkEmail) {
-        res.render('error-page', { error: 'This Email already has an account' });
-        //res.status(400).send({error: 'This Email already has an account' });
+        //console.log('Existing email')
+        //res.render('error-page', { error: 'This Email already has an account' });
+        res.status(400).send({error: 'An account has been created with this email' });
+        //console.log('After render')
         return;
       } if (checkEmail === false) {
         res.render('error-page', { error: 'An error occured while setting up your account' });
@@ -86,19 +88,16 @@ class UsersController {
         return;
       }
 
-      // Check if the email has been used
+      // Check if the username has been used
       const checkUser = await findOneUser(dbClient, { username });
       if (checkUser) {
-        res.render('error-page', { error: 'This username has been taken' });
+        //res.render('error-page', { error: 'This username has been taken' });
 
-      //  res.status(400).send({
-      //    error: 'This username has been taken',
-      // });
+        res.status(400).send({ error: 'This username has been taken' });
         return;
       } if (checkUser === false) {
-        //res.status(400).send({ error: 'An error occured' });
-        res.render('error-page', { error: 'An error occured while setting up your account' });
-        //res.render('error-page', { error: 'An error occured' });
+        res.status(400).send({ error: 'An error occured' });
+        //res.render('error-page', { error: 'An error occured while setting up your account' });
         return;
       }
 
@@ -120,8 +119,8 @@ class UsersController {
       res.json({data: 'Your account has been created successfully'});
     } catch (err) {
       console.log('Error occured while creating user:', err.message);
-      //res.status(500).send({ error: 'An error occured'});
-      res.render('error-page', { error: 'An error occured while setting up your account' });
+      res.status(500).send({ error: 'An error occured while setting up your account'});
+      //res.render('error-page', { error: 'An error occured while setting up your account' });
 
     }
   }
