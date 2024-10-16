@@ -28,7 +28,8 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   justify-content: center;
-  background: linear-gradient(var(--Purple500), var(--Purple100));
+  /*background: linear-gradient(var(--Purple500), var(--Purple100));*/
+  background: lightcyan;
   font-size: 1.125rem;
   padding: 1rem 5%;
 }
@@ -221,31 +222,43 @@ border: 1px solid #7a67b1; /* Lighter purple border */
 }
 
 #chatList {
+  height: 72vh;
   list-style-type: none;
   padding: 10px;
   margin: 0;
-  max-height: 300px;
+  /*max-height: 300px;*/
   overflow-y: scroll;
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
+  border: px solid #000000;
   border-radius: 10px;
 }
 
 #chatList li {
   padding: 8px;
   margin-bottom: 10px;
-  background-color: #e0e0e0;
+  /*background-color: #e0e0e0;*/
+  background-color: rgba(0, 0, 0, 0.8);
   border-radius: 5px;
   word-wrap: break-word;
+  height: fit-content;
+  max-height: 200px;
+  /*position: static;*/
+  display: flex;
+}
+
+#chatList li p{
+  margin: 0;
+    text-align: left;
+    max-width: 20%;
 }
 
 #chatList li.user {
   background-color: #d4edda;
   text-align: right;
+  display: block;
 }
 
 #chatList li.other {
-  background-color: #f8d7da;
   text-align: left;
 }
 
@@ -258,4 +271,17 @@ border: 1px solid #7a67b1; /* Lighter purple border */
   background-color: #888;
   border-radius: 10px;
 }
+
+video, img {
+  /*width: 100%;*/
+  /*height: auto;
+  max-width: 100%;*/
+  max-height: calc(100% - 32px);
+  max-width: calc(100% - 20%);
+  object-fit: cover;
+    flex-shrink: 1;
+    flex-grow: 0;
+    margin-left: 20px;
+}
+
  /*:end*/
