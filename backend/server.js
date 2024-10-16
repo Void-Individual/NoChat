@@ -54,6 +54,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve static files from the 'scripts' directory
 app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 
+// Serve html redirection files from the 'public' directory
+app.use('/public', express.static(path.join(__dirname, 'views')));
+
 // Serve static files
 app.use('/static', (req, res, next) => {
   const filePath = path.join(__dirname, 'static', req.url);
