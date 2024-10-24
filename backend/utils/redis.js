@@ -7,6 +7,7 @@ class RedisClient {
     this.client = createClient({ url: 'redis://localhost:6379' });
     this.publisher = createClient({ url: 'redis://localhost:6379' });
     this.subscriber = createClient({ url: 'redis://localhost:6379' });
+    this.connected = false;
 
     // Connect to Redis
     this.connect();
@@ -21,6 +22,7 @@ class RedisClient {
           this.subscriber.connect(),
       ]);
       console.log('All Redis clients connected');
+      this.connected = true;
     } catch (err) {
       console.error('Error connecting to Redis:', err);
     }
