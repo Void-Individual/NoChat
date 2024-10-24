@@ -1,4 +1,5 @@
-const MongoClient = require('mongodb/lib/mongo_client');
+//const MongoClient = require('mongodb/lib/mongo_client');
+const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
@@ -8,30 +9,40 @@ class DBClient {
 
     this.connected = false;
     const url = `mongodb://${host}:${port}`;
-    this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    //Removing this due to its depreciated status
+    //this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    this.client = new MongoClient(url);
 
-    this.client.connect((err) => {
-      if (err) {
-        console.log('Failed to connect to mongo:', err);
-        this.connected = false;
-      } else {
-        console.log('Connected to mongodb');
-        this.connected = true;
-        this.db = this.client.db(database);
-        this.db.collection('users').createIndex(
-          { username: 1 },
-          {
-            collation: { locale: 'en', strength: 2 }
-          }
-        )
-        this.db.collection('files').createIndex(
-          { username: 1 },
-          {
-            collation: { locale: 'en', strength: 2 }
-          }
-        )
-      }
-    });
+      // Changed the connection style
+    this.connect(database);
+  }
+
+  async connect(database) {
+    try {
+      // The connect function no longer uses a call back function, instead it
+      // used async/await or pomises
+      await this.client.connect();
+      console.log('Connected to mongodb');
+      this.connected = true;
+      this.db = this.client.db(database);
+
+      // Create indexes
+      await this.db.collection('users').createIndex(
+        { username: 1 },
+        {
+          collation: { locale: 'en', strength: 2 }
+        }
+      );
+      await this.db.collection('files').createIndex(
+        { username: 1 },
+        {
+          collation: { locale: 'en', strength: 2 }
+        }
+      );
+    } catch (err) {
+      console.error('Failed to connect to mongo:', err.message);
+      this.connected = false;
+    }
   }
 
   async subscribedChannels() {

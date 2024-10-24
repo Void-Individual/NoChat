@@ -1,28 +1,29 @@
-import redis from 'redis';
-import { promisify } from 'util';
+const { createClient } = require('redis');
+// I no longer need to use promisify module
 
 class RedisClient {
   constructor() {
-    this.client = redis.createClient();
-    this.subscriber = redis.createClient();
-    this.publisher = redis.createClient();
+    // Initialize clients for general usage, publishing, and subscribing
+    this.client = createClient({ url: 'redis://localhost:6379' });
+    this.publisher = createClient({ url: 'redis://localhost:6379' });
+    this.subscriber = createClient({ url: 'redis://localhost:6379' });
 
-    this.connected = false; // Initialize to false
+    // Connect to Redis
+    this.connect();
+  }
 
-    this.client.on('connect', () => {
-      console.log('Redis client connected');
-      this.connected = true;
-    });
-
-    this.client.on('error', (err) => {
-      console.log('Redis connection error:', err.message);
-      this.connected = false;
-    });
-
-    // Promisify Redis methods
-    this.getAsync = promisify(this.client.get).bind(this.client);
-    this.setAsync = promisify(this.client.set).bind(this.client);
-    this.delAsync = promisify(this.client.del).bind(this.client);
+  async connect() {
+    try {
+      // Connect all clients
+      await Promise.all([
+          this.client.connect(),
+          this.publisher.connect(),
+          this.subscriber.connect(),
+      ]);
+      console.log('All Redis clients connected');
+    } catch (err) {
+      console.error('Error connecting to Redis:', err);
+    }
   }
 
   isAlive() {
