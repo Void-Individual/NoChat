@@ -16,15 +16,15 @@ async function findOneUser(client, query) {
   try {
     const newQuery = query;
     // If the passed query contains id, make it a mongo id object
-    if (query._id) {
-      newQuery._id = new ObjectId(query._id);
-    }
+    //if (query._id) {
+    //  newQuery._id = new ObjectId(query._id);
+    //}
     // FInd the mongo document that matches the search query
     const data = await client.db.collection('users').findOne(newQuery);
     // If it is found, it wil be returned, else return null
     return data;
   } catch (err) {
-    console.log('Error finding data:', err.message);
+    console.log('Error finding data:', err);
     // If there is an error, return false instead of null
     return false;
   }
@@ -128,7 +128,7 @@ class UsersController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
-
+      console.log('Retrieved body')
       const user = await findOneUser(dbClient, { email });
       if (user) {
         if (hashSHA1(password) !== user.password) {

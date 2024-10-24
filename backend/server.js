@@ -73,7 +73,7 @@ app.use('/static', (req, res, next) => {
     } else {
         next(); // No error, proceed as usual
     }
-});
+  });
 });
 //app.use('/static', express.static(path.join(__dirname, 'static')));
 
