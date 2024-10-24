@@ -93,7 +93,7 @@ router.get('/connect', AuthController.getConnect);
 
 
 
-router.get('/status', AppController.getStatus);
+router.get('/dbstatus', AppController.getStatus);
 router.get('/stats', AppController.getStats);
 
 //router.get('/connect', AuthController.getConnect);
