@@ -14,11 +14,11 @@ function hashSHA1(data) {
 
 async function findOneUser(client, query) {
   try {
-    const newQuery = query;
+    const newQuery = { ...query };
     // If the passed query contains id, make it a mongo id object
-    //if (query._id) {
-    //  newQuery._id = new ObjectId(query._id);
-    //}
+    if (query._id) {
+      newQuery._id = new ObjectId(query._id);
+    }
     // FInd the mongo document that matches the search query
     const data = await client.db.collection('users').findOne(newQuery);
     // If it is found, it wil be returned, else return null
@@ -242,6 +242,7 @@ class UserController {
       const _id = await redisClient.get(`auth_${token}`);
       const user = await findOneUser(dbClient, { _id });
       const results = [];
+      console.log('Checking for user')
       if (user) {
         res.render('profile-page', { user, results });
         //const { email } = user;
