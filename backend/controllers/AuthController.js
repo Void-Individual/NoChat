@@ -116,7 +116,7 @@ class AuthController {
         // Set the status to offline
         try {
           const result = await dbClient.db.collection('users').updateOne(
-            { _id: ObjectId(_id) },  // The filter to find the user document by ID
+            { _id: new ObjectId(_id) },  // The filter to find the user document by ID
             { $set: { status: "Offline" } }  // Update operation to set the status to "Offline"
           );
 

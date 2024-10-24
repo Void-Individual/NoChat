@@ -35,7 +35,7 @@ class RedisClient {
 
   async get(key) {
     try {
-      const value = await this.getAsync(key);
+      const value = await this.client.get(key);
       return value;
     } catch (err) {
       console.error('Error getting value from Redis:', err.message);
@@ -46,9 +46,9 @@ class RedisClient {
   async set(key, value, time) {
     try {
       if (time) {
-        await this.setAsync(key, value, 'EX', time); // Set with expiration time
+        await this.client.setEx(key, time, value); // Set with expiration time
       } else {
-        await this.setAsync(key, value); // Set without expiration
+        await this.set(key, value); // Set without expiration
       }
     } catch (err) {
       console.log('Error setting key:', err.message);
@@ -57,7 +57,7 @@ class RedisClient {
 
   async del(key) {
     try {
-      await this.delAsync(key);
+      await this.client.del(key);
     } catch (err) {
       console.log('Error deleting key:', err.message);
     }
