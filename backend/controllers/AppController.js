@@ -62,12 +62,16 @@ async function findOneUser(client, query) {
 class AppController {
   static async getStatus(req, res) {
     console.log('Is mongo alive before waiting:', dbClient.isAlive());
-    await waitConnection(dbClient);
-    console.log('Is mongo alive after waiting:', dbClient.isAlive());
-
+    if (!dbClient.isAlive()) {
+      await waitConnection(dbClient);
+      console.log('Is mongo alive after waiting:', dbClient.isAlive());
+    }
+    
     console.log('Is redis alive before waiting:', redisClient.isAlive());
-    await waitConnection(redisClient);
-    console.log('Is redis alive after waiting:', redisClient.isAlive());
+    if (!redisClient.isAlive()) {
+      await waitConnection(redisClient);
+      console.log('Is redis alive after waiting:', redisClient.isAlive());
+    }
 
     const isAlive = {
       redis: redisClient.isAlive(),
