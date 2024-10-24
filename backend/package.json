@@ -1,0 +1,57 @@
+{
+  "name": "files_manager",
+  "version": "1.0.0",
+  "description": "Handling routes and r-t chat management",
+  "main": "server.js",
+  "engines": {
+    "node": ">=16.20.2"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint",
+    "check-lint": "lint [0-9]*.js",
+    "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
+    "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
+    "dev": "nodemon --exec babel-node --presets @babel/preset-env",
+    "test": "./node_modules/.bin/mocha --require @babel/register --exit",
+    "start": "babel-node --presets @babel/preset-env ./server.js"
+  },
+  "author": "Void-Individual",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "bull": "^4.16.3",
+    "chai-http": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "form-data": "^4.0.1",
+    "image-thumbnail": "^1.0.17",
+    "mime-types": "^2.1.35",
+    "mongodb": "^6.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-gridfs-storage": "^5.0.2",
+    "redis": "^4.7.0",
+    "sha1": "^1.1.1",
+    "socket.io": "^4.8.0",
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.9",
+    "@babel/core": "^7.25.9",
+    "@babel/node": "^7.25.9",
+    "@babel/preset-env": "^7.25.9",
+    "@babel/register": "^7.25.9",
+    "chai": "^5.1.2",
+    "chai-http": "^5.1.1",
+    "eslint": "^9.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.8.3",
+    "mocha": "^10.7.3",
+    "nodemon": "^3.1.7",
+    "request": "^2.88.2",
+    "sinon": "^19.0.2"
+  }
+}
