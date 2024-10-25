@@ -66,7 +66,7 @@ class AppController {
       await waitConnection(dbClient);
       console.log('Is mongo alive after waiting:', dbClient.isAlive());
     }
-    
+
     console.log('Is redis alive before waiting:', redisClient.isAlive());
     if (!redisClient.isAlive()) {
       await waitConnection(redisClient);
@@ -222,6 +222,7 @@ redisClient.subscriber.on('error', (err) => {
 
 // Function to publish a message
 function sendMessage(channel, message, sender) {
+  console.log('Send message gets called')
   const { io } = require('../server'); // Import io for socket.io communication
 
   redisClient.publisher.publish(channel, message, (err, reply) => {

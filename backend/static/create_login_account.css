@@ -29,7 +29,7 @@ body {
   min-height: 100svh;
   justify-content: center;
   /*background: linear-gradient(var(--Purple500), var(--Purple100));*/
-  background: lightcyan;
+  background: rgb(23, 52, 52);
   font-size: 1.125rem;
   padding: 1rem 5%;
 }

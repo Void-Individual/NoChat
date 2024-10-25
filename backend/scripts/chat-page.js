@@ -1,3 +1,5 @@
+//const { io } = require('../server'); // Import io for socket.io communication
+
 // Retrieve the object data (username was passed in here instead of whole objects)
     // that was passed through ejs
     const userDataElement = document.getElementById('userData');
@@ -8,16 +10,19 @@
 
     const socket = io(); // Initialize Socket.io connection
     // Join the chat channel
+    console.log('running socket')
     socket.emit('joinChannel', channel);
 
     // Listen for new messages from the server
     socket.on('newMessage', ({ sender, message }) => {
+      console.log('catching new messages')
       const chatList = document.getElementById('chatList');
       const newMessage = document.createElement('li');
 
       // If a new message is published and is sent
       if (sender === user1) {
         // If the sender is this main user, trigger the user class
+        console.log('Text sent')
         if (message.split(':')[1] !== 'Sent media') {
           console.log('Aye')
           newMessage.className = 'user';
@@ -67,7 +72,6 @@
         }
       }
       formData.append('message', `${user1}: ${message}`); // Append the file to the form data
-
 
       spam = true;
 
